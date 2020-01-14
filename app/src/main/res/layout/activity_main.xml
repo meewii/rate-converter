@@ -1,0 +1,71 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/ui_toolbar"
+      android:layout_width="0dp"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/colorPrimary"
+      android:theme="?attr/actionBarTheme"
+      app:layout_constraintBottom_toTopOf="@+id/ui_error_message"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/ui_error_message"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:background="@color/surface"
+      android:drawableStart="@drawable/ic_warning_24px"
+      android:drawablePadding="@dimen/margin_medium"
+      android:padding="@dimen/margin_medium"
+      android:textColor="@color/error"
+      android:visibility="gone"
+      app:layout_constraintBottom_toTopOf="@+id/ui_recycler_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/ui_toolbar"
+      tools:text="Some error message"
+      tools:visibility="visible" />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/ui_recycler_view"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@color/background"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      android:scrollbars="vertical"
+      app:layout_constraintBottom_toTopOf="@+id/ui_credits"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/ui_error_message" />
+
+  <ProgressBar
+      android:id="@+id/ui_progress_bar"
+      android:layout_width="@dimen/loading_wheel_size"
+      android:layout_height="@dimen/loading_wheel_size"
+      android:layout_marginTop="?attr/actionBarSize"
+      android:backgroundTint="@color/secondary"
+      android:indeterminate="true"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/ui_credits"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/ui_recycler_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

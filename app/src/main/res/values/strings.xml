@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">Rate converter</string>
+  <string name="main_activity_title">Rates</string>
+  <string name="flag_description">Rate flag</string>
+  <string name="unknown_error">An unknown error occurred.</string>
+  <string name="flags_icons_credits"><![CDATA[Icons made by <a href=\"https://www.flaticon.com/authors/freepik\" title=\"Freepik\">Freepik</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\"> www.flaticon.com</a>]]></string>
+</resources>
