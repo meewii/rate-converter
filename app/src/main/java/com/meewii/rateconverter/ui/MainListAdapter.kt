@@ -3,10 +3,12 @@ package com.meewii.rateconverter.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.meewii.rateconverter.R
-import kotlinx.android.synthetic.main.li_rate.view.*
+import kotlinx.android.synthetic.main.li_rate.view.ui_currency_code
+import kotlinx.android.synthetic.main.li_rate.view.ui_currency_name
+import kotlinx.android.synthetic.main.li_rate.view.ui_flag
+import kotlinx.android.synthetic.main.li_rate.view.ui_value
 
 class MainListAdapter : RecyclerView.Adapter<RateViewHolder>() {
 
@@ -21,7 +23,13 @@ class MainListAdapter : RecyclerView.Adapter<RateViewHolder>() {
   override fun onBindViewHolder(holder: RateViewHolder, position: Int) {
     val rate = data[position]
     holder.itemView.apply {
-      ui_rate.contentDescription = rate.currencyName
+      ui_currency_code.text = rate.currencyCode
+      ui_currency_name.text = context.getString(rate.nameResId)
+      ui_flag.contentDescription = ui_currency_name.text
+      ui_flag.setImageResource(rate.flagResId)
+
+      // TODO display comma in german, format value
+      ui_value.setText(rate.calculatedValue(1.0).toString())
     }
   }
 
@@ -34,8 +42,3 @@ class MainListAdapter : RecyclerView.Adapter<RateViewHolder>() {
 }
 
 class RateViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
-data class Rate(val currencyCode: String,
-                val currencyName: String,
-                var value: Double,
-                @DrawableRes val flag: Int)

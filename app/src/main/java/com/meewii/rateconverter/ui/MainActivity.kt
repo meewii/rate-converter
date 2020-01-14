@@ -11,7 +11,6 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.ui_error_message
 import kotlinx.android.synthetic.main.activity_main.ui_progress_bar
 import kotlinx.android.synthetic.main.activity_main.ui_recycler_view
-import kotlinx.android.synthetic.main.activity_main.ui_toolbar
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
   private val viewAdapter: MainListAdapter = MainListAdapter()
 
-  private val rateObserver = Observer<List<Rate>> { rates ->
+  private val rateListObserver = Observer<List<Rate>> { rates ->
     rates?.let {
       viewAdapter.setData(rates)
     }
@@ -44,11 +43,8 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     AndroidInjection.inject(this)
-
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    setSupportActionBar(ui_toolbar)
-    supportActionBar?.setTitle(R.string.main_activity_title)
 
     ui_recycler_view.apply {
       layoutManager = LinearLayoutManager(context)
@@ -56,8 +52,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     mainViewModel.apply {
-      rateList.observe(this@MainActivity, rateObserver)
+      rateList.observe(this@MainActivity, rateListObserver)
       viewStatus.observe(this@MainActivity, statusObserver)
+      subscribeToRates()
     }
   }
 

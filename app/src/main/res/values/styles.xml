@@ -17,6 +17,9 @@
         <item name="colorOnBackground">@color/on_surface</item>
 
         <item name="android:statusBarColor">@color/primary_dark</item>
+
+        <item name="textAppearanceListItem">@style/AppTheme.Text.Subtitle1</item>
+        <item name="textAppearanceListItemSecondary">@style/AppTheme.Text.Body1</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

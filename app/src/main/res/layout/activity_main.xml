@@ -4,12 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.google.android.material.appbar.MaterialToolbar
+  <TextView
       android:id="@+id/ui_toolbar"
       android:layout_width="0dp"
       android:layout_height="?attr/actionBarSize"
-      android:background="?attr/colorPrimary"
-      android:theme="?attr/actionBarTheme"
+      android:gravity="center_vertical"
+      android:paddingStart="72dp"
+      android:paddingEnd="16dp"
+      android:text="@string/main_activity_title"
+      android:textAppearance="?attr/textAppearanceHeadline6"
       app:layout_constraintBottom_toTopOf="@+id/ui_error_message"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
