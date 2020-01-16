@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="72dp">
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+        name="rate"
+        type="com.meewii.rateconverter.ui.Rate" />
+
+    <variable
+        name="calculatedValue"
+        type="Double" />
+
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="72dp">
 
     <ImageView
         android:id="@+id/ui_flag"
@@ -12,6 +26,8 @@
         android:layout_height="40dp"
         android:layout_margin="16dp"
         android:contentDescription="@string/flag_description"
+        app:contentDescriptionRes="@{rate.nameResId}"
+        app:iconRes="@{rate.flagResId}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ui_currency_code"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,24 +38,28 @@
         android:id="@+id/ui_currency_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:text="@{rate.currencyCode}"
         android:textAppearance="?attr/textAppearanceListItem"
         android:translationY="-2.62sp"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@+id/ui_currency_name"
         app:layout_constraintEnd_toStartOf="@+id/ui_value"
-        app:layout_constraintStart_toEndOf="@+id/ui_flag"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:text="EUR" />
 
     <TextView
         android:id="@+id/ui_currency_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
         android:textAppearance="?attr/textAppearanceListItemSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ui_currency_code"
+        app:layout_constraintEnd_toStartOf="@+id/ui_value"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ui_currency_code"
+        app:textRes="@{rate.nameResId}"
         tools:text="Euro" />
 
     <EditText
@@ -50,8 +70,9 @@
         android:textAppearance="@style/AppTheme.Text.RateValue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ui_currency_code"
         app:layout_constraintTop_toTopOf="parent"
+        app:rateValue="@{calculatedValue}"
         tools:text="1000.00" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

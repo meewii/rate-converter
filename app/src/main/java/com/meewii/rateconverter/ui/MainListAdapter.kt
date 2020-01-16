@@ -1,36 +1,38 @@
 package com.meewii.rateconverter.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.meewii.rateconverter.R
-import kotlinx.android.synthetic.main.li_rate.view.ui_currency_code
-import kotlinx.android.synthetic.main.li_rate.view.ui_currency_name
-import kotlinx.android.synthetic.main.li_rate.view.ui_flag
-import kotlinx.android.synthetic.main.li_rate.view.ui_value
+import com.meewii.rateconverter.databinding.LiRateBinding
+import java.util.Locale
 
-class MainListAdapter : RecyclerView.Adapter<RateViewHolder>() {
+class MainListAdapter : RecyclerView.Adapter<MainListAdapter.RateViewHolder>() {
+
+  private val binding: LiRateBinding? = null
 
   private var data: List<Rate> = emptyList()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RateViewHolder {
     val inflater = LayoutInflater.from(parent.context)
-    val view = inflater.inflate(R.layout.li_rate, parent, false)
-    return RateViewHolder(view)
+    val binding = LiRateBinding.inflate(inflater, parent, false)
+    return RateViewHolder(binding)
+  }
+
+  class RateViewHolder(private val binding: LiRateBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: Rate) {
+      binding.apply {
+        rate = item
+        calculatedValue = item.calculatedValue(1.0)
+        executePendingBindings()
+      }
+    }
   }
 
   override fun onBindViewHolder(holder: RateViewHolder, position: Int) {
     val rate = data[position]
-    holder.itemView.apply {
-      ui_currency_code.text = rate.currencyCode
-      ui_currency_name.text = context.getString(rate.nameResId)
-      ui_flag.contentDescription = ui_currency_name.text
-      ui_flag.setImageResource(rate.flagResId)
-
-      // TODO display comma in german, format value
-      ui_value.setText(rate.calculatedValue(1.0).toString())
-    }
+    holder.bind(rate)
   }
 
   override fun getItemCount() = data.size
@@ -41,4 +43,8 @@ class MainListAdapter : RecyclerView.Adapter<RateViewHolder>() {
   }
 }
 
-class RateViewHolder(view: View) : RecyclerView.ViewHolder(view)
+@BindingAdapter("app:rateValue")
+fun EditText.setRateValue(rateValue: Double) {
+  setText(String.format(Locale.getDefault(), "%.4f", rateValue))
+}
+
