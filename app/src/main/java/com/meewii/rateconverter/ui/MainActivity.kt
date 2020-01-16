@@ -18,7 +18,9 @@ class MainActivity : AppCompatActivity() {
   @Inject
   lateinit var mainViewModel: MainViewModel
 
-  private val viewAdapter: MainListAdapter = MainListAdapter()
+  private val viewAdapter: MainListAdapter = MainListAdapter() { item ->
+    mainViewModel.subscribeToRates(item.currencyCode)
+  }
 
   private val rateListObserver = Observer<List<Rate>> { rates ->
     rates?.let {

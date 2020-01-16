@@ -8,6 +8,6 @@ data class Rate(
   val nameResId: Int
 ) {
 
-  fun calculatedValue(baseCurrencyValue: Double) = baseCurrencyValue * value
+  fun calculatedValue(userInput: Double) = userInput * value
 
 }
