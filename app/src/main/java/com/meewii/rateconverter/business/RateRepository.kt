@@ -5,14 +5,16 @@ import com.meewii.rateconverter.core.flagMapper
 import com.meewii.rateconverter.core.nameMapper
 import com.meewii.rateconverter.ui.Rate
 import dagger.Reusable
-import io.reactivex.Single
+import io.reactivex.Flowable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Reusable
 class RateRepository @Inject constructor(private val service: RateService) {
 
-  fun getRatesForBase(base: String): Single<RateResponse> {
-    return service.getRatesForBase(base)
+  fun getRatesForBase(base: String): Flowable<RateResponse> {
+    return Flowable.interval(1L, TimeUnit.SECONDS)
+      .flatMap { service.getRatesForBase(base).toFlowable() }
       .map { response ->
         if (response.errorMessage != null) RateResponse.Error(null, response.errorMessage)
         else if (response.base == null || response.rates == null) {
@@ -33,7 +35,7 @@ class RateRepository @Inject constructor(private val service: RateService) {
 
     rates.forEach {
       val rate = Rate(
-        currencyCode = it.key, value = it.value, flagResId = flagMapper(it.key), nameResId = nameMapper(it.key)
+        currencyCode = it.key, rateValue = it.value, flagResId = flagMapper(it.key), nameResId = nameMapper(it.key)
       )
       mutableList.add(rate)
     }

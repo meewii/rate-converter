@@ -41,6 +41,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerVersion"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycle"

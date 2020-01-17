@@ -9,8 +9,9 @@ import com.meewii.rateconverter.core.gone
 import com.meewii.rateconverter.core.visible
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.ui_error_message
-import kotlinx.android.synthetic.main.activity_main.ui_progress_bar
 import kotlinx.android.synthetic.main.activity_main.ui_recycler_view
+import kotlinx.android.synthetic.main.activity_main.ui_swipe_container
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -18,8 +19,14 @@ class MainActivity : AppCompatActivity() {
   @Inject
   lateinit var mainViewModel: MainViewModel
 
-  private val viewAdapter: MainListAdapter = MainListAdapter() { item ->
-    mainViewModel.subscribeToRates(item.currencyCode)
+  private val viewAdapter: MainListAdapter = MainListAdapter(::onClickItem, ::onUserInput)
+
+  private fun onClickItem(rate: Rate) {
+    mainViewModel.subscribeToRates(rate.currencyCode)
+  }
+
+  private fun onUserInput(value: Double) {
+    mainViewModel.newUserInput(value)
   }
 
   private val rateListObserver = Observer<List<Rate>> { rates ->
@@ -30,15 +37,15 @@ class MainActivity : AppCompatActivity() {
 
   private val statusObserver = Observer<ViewStatus> { status ->
     when (status) {
-      is ViewStatus.Loading -> ui_progress_bar.visible()
+      is ViewStatus.Loading -> ui_swipe_container.isRefreshing = true
       is ViewStatus.Error -> {
-        ui_progress_bar.gone()
+        ui_swipe_container.isRefreshing = false
         ui_error_message.visible()
         ui_error_message.text = status.message ?: getString(R.string.unknown_error)
       }
       else -> {
         ui_error_message.gone()
-        ui_progress_bar.gone()
+        ui_swipe_container.isRefreshing = false
       }
     }
   }
@@ -48,15 +55,21 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
+    ui_swipe_container.setOnRefreshListener {
+      Timber.v("AAA RefreshListener")
+      mainViewModel.subscribeToRates()
+    }
+
     ui_recycler_view.apply {
       layoutManager = LinearLayoutManager(context)
       adapter = viewAdapter
     }
 
     mainViewModel.apply {
-      rateList.observe(this@MainActivity, rateListObserver)
+      combinedRates.observe(this@MainActivity, rateListObserver)
       viewStatus.observe(this@MainActivity, statusObserver)
       subscribeToRates()
+      initCombinedRates()
     }
   }
 

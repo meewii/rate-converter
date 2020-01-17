@@ -10,10 +10,6 @@
         type="com.meewii.rateconverter.ui.Rate" />
 
     <variable
-        name="calculatedValue"
-        type="Double" />
-
-    <variable
         name="onClickListener"
         type="kotlin.jvm.functions.Function0" />
 
@@ -72,11 +68,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:maxWidth="100dp"
+        android:maxLines="1"
         android:textAppearance="@style/AppTheme.Text.RateValue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rateValue="@{calculatedValue}"
+        app:rateValue="@{rate.calculatedValue}"
         android:enabled="false"
         android:focusable="false"
         tools:text="1000.00" />

@@ -9,10 +9,6 @@
         name="rate"
         type="com.meewii.rateconverter.ui.Rate" />
 
-    <variable
-        name="calculatedValue"
-        type="Double" />
-
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,11 +63,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:inputType="number"
+        android:maxWidth="100dp"
         android:textAppearance="@style/AppTheme.Text.RateValue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rateValue="@{calculatedValue}"
         tools:text="1000.00" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
