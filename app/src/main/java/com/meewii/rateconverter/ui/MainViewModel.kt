@@ -36,7 +36,6 @@ class MainViewModel @Inject constructor(private val repository: RateRepository) 
    * Value of the base rate entered by the user
    */
   fun newUserInput(value: Double) {
-    Timber.d("_userInputValue? $value")
     _userInputValue.value = value
   }
 
