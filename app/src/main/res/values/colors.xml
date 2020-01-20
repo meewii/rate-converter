@@ -4,10 +4,10 @@
     <color name="primary">@color/white</color>
     <color name="on_primary">@color/black_primary</color>
     <color name="primary_dark">@color/grey_light</color>
-    <color name="secondary">@color/pink</color>
-    <color name="on_secondary">@color/black</color>
-    <color name="secondary_dark">@color/pink_dark</color>
-    <color name="on_surface">@color/black_primary</color>
+    <color name="secondary">@color/blue</color>
+    <color name="on_secondary">@color/white</color>
+    <color name="secondary_dark">@color/blue_dark</color>
+    <color name="on_surface">@color/white</color>
     <color name="on_surface_secondary">@color/blue_grey</color>
     <color name="error">@color/red</color>
     <color name="on_error">@color/white</color>
@@ -23,6 +23,6 @@
     <color name="black">#000</color>
     <color name="black_primary">#191C1F</color>
     <color name="red">#f44336</color>
-    <color name="pink">#EB008D</color>
-    <color name="pink_dark">#D2007E</color>
+    <color name="blue">#0075EB</color>
+    <color name="blue_dark">#0000EE</color>
 </resources>
