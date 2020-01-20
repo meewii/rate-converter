@@ -1,19 +1,19 @@
 package com.meewii.rateconverter.ui
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.meewii.rateconverter.business.RateRepository
-import com.meewii.rateconverter.business.RateRepository.Companion.DEFAULT_CURRENCY
+import com.meewii.rateconverter.business.PollRateManager
+import com.meewii.rateconverter.business.PollRateManager.Companion.DEFAULT_CURRENCY
 import com.meewii.rateconverter.business.RateResponse
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * ViewModel of MainActivity
  */
-class MainViewModel @Inject constructor(private val repository: RateRepository) : ViewModel() {
+class MainViewModel @Inject constructor(private val pollManager: PollRateManager) : ViewModel() {
 
   private val _viewStatus: MutableLiveData<ViewStatus> = MutableLiveData()
   val viewStatus: LiveData<ViewStatus> = _viewStatus
@@ -21,7 +21,8 @@ class MainViewModel @Inject constructor(private val repository: RateRepository) 
   private val _userInputValue: MutableLiveData<Double> = MutableLiveData()
   val combinedRates = MediatorLiveData<List<Rate>>()
 
-  private var cachedBaseCurrency: String = DEFAULT_CURRENCY
+  @VisibleForTesting
+  internal var cachedBaseCurrency: String = DEFAULT_CURRENCY
 
   /**
    * Start polling rates for the given base currency
@@ -29,7 +30,7 @@ class MainViewModel @Inject constructor(private val repository: RateRepository) 
   fun subscribeToRates(currency: String? = null) {
     _viewStatus.value = ViewStatus.Loading
     cachedBaseCurrency = currency ?: DEFAULT_CURRENCY
-    repository.startPollingRates(cachedBaseCurrency)
+    pollManager.startPollingRates(cachedBaseCurrency)
   }
 
   /**
@@ -40,15 +41,16 @@ class MainViewModel @Inject constructor(private val repository: RateRepository) 
   }
 
   fun initCombinedRates() {
-    combinedRates.addSource(repository.rateResponse) { rates ->
+    combinedRates.addSource(pollManager.rateResponse) { rates ->
       combineLatestData(rates, _userInputValue.value ?: 1.0)
     }
     combinedRates.addSource(_userInputValue) { userInput ->
-      combineLatestData(repository.rateResponse.value, userInput)
+      combineLatestData(pollManager.rateResponse.value, userInput)
     }
   }
 
-  private fun combineLatestData(response: RateResponse?, userInput: Double) {
+  @VisibleForTesting
+  internal fun combineLatestData(response: RateResponse?, userInput: Double) {
     var rates: List<Rate>? = combinedRates.value
     when (response) {
       is RateResponse.Success -> {
@@ -71,7 +73,7 @@ class MainViewModel @Inject constructor(private val repository: RateRepository) 
 
   override fun onCleared() {
     super.onCleared()
-    repository.stopPollingRates()
+    pollManager.stopPollingRates()
   }
 
 }

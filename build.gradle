@@ -13,6 +13,10 @@ buildscript {
         rxAndroidVersion = "2.1.1"
         gsonVersion = "2.8.6"
         timberVersion = "4.7.1"
+        mockitoVersion = "2.21.0"
+        mockitoKtVersion = "2.1.0"
+        robolectricVersion = "4.3"
+        truthVersion = "0.42"
     }
     repositories {
         google()

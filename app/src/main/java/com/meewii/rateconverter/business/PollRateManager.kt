@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Repository in charge of polling the rates every seconds.
+ * Manager in charge of polling the rates every seconds.
  * It feeds a RateResponse as LiveData which handles Success and Error states.
  *
- * The poller will retry silently 10 times in case of errors. After reaching maximum attempts, a
+ * The polling will retry silently 10 times in case of errors. After reaching maximum attempts, a
  * TooManyAttemptsException will be thrown.
  */
 @Reusable
-class RateRepository @Inject constructor(private val service: RateService) {
+class PollRateManager @Inject constructor(private val service: RateService) {
 
   companion object {
     const val DEFAULT_CURRENCY = "EUR"
