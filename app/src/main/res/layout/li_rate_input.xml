@@ -58,12 +58,12 @@
         app:textRes="@{rate.nameResId}"
         tools:text="Euro" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/ui_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:inputType="number"
+        android:inputType="number|textNoSuggestions"
         android:maxWidth="100dp"
         android:textAppearance="@style/AppTheme.Text.RateValue"
         app:layout_constraintBottom_toBottomOf="parent"

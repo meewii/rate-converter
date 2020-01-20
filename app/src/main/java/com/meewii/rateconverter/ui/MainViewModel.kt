@@ -5,10 +5,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.meewii.rateconverter.business.RateRepository
+import com.meewii.rateconverter.business.RateRepository.Companion.DEFAULT_CURRENCY
 import com.meewii.rateconverter.business.RateResponse
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposables
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,62 +19,60 @@ class MainViewModel @Inject constructor(private val repository: RateRepository) 
   val viewStatus: LiveData<ViewStatus> = _viewStatus
 
   private val _userInputValue: MutableLiveData<Double> = MutableLiveData()
-  private val _rateList: MutableLiveData<List<Rate>> = MutableLiveData()
   val combinedRates = MediatorLiveData<List<Rate>>()
 
-  private var serviceDisposable = Disposables.disposed()
+  private var cachedBaseCurrency: String = DEFAULT_CURRENCY
 
-  private var cachedBaseCurrency: String = "EUR"
-
+  /**
+   * Start polling rates for the given base currency
+   */
   fun subscribeToRates(currency: String? = null) {
     _viewStatus.value = ViewStatus.Loading
+    cachedBaseCurrency = currency ?: DEFAULT_CURRENCY
+    repository.startPollingRates(cachedBaseCurrency)
+  }
 
-    cachedBaseCurrency = currency ?: "EUR"
-
-    Timber.d("AAAA currency? $currency | cachedBaseCurrency? $cachedBaseCurrency")
-
-    serviceDisposable.dispose()
-    serviceDisposable = repository.getRatesForBase(cachedBaseCurrency)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe({ response ->
-          when (response) {
-            is RateResponse.Success -> {
-              _rateList.value = response.rates
-              _viewStatus.value = ViewStatus.Idle
-            }
-            is RateResponse.Error -> {
-              _viewStatus.value = ViewStatus.Error(response.errorMessage, response.error)
-            }
-          }
-        }, {
-          _viewStatus.value = ViewStatus.Error(null, it)
-        })
+  /**
+   * Value of the base rate entered by the user
+   */
+  fun newUserInput(value: Double) {
+    Timber.d("_userInputValue? $value")
+    _userInputValue.value = value
   }
 
   fun initCombinedRates() {
-    combinedRates.addSource(_rateList) { rates ->
-      combinedRates.value = combineLatestData(rates, _userInputValue.value ?: 1.0)
+    combinedRates.addSource(repository.rateResponse) { rates ->
+      combineLatestData(rates, _userInputValue.value ?: 1.0)
     }
     combinedRates.addSource(_userInputValue) { userInput ->
-      combinedRates.value = combineLatestData(_rateList.value ?: emptyList(), userInput)
+      combineLatestData(repository.rateResponse.value, userInput)
     }
   }
 
-  private fun combineLatestData(rates: List<Rate>, userInput: Double): List<Rate> {
-    rates.map {
+  private fun combineLatestData(response: RateResponse?, userInput: Double) {
+    var rates: List<Rate>? = combinedRates.value
+    when (response) {
+      is RateResponse.Success -> {
+        rates = response.rates
+        _viewStatus.value = ViewStatus.Idle
+      }
+      is RateResponse.Error -> {
+        _viewStatus.value = ViewStatus.Error(response.errorMessage, response.error)
+      }
+      else -> {
+        rates = emptyList()
+      }
+    }
+
+    rates?.map {
       it.calculatedValue = userInput * it.rateValue
     }
-    return rates
+    combinedRates.value  = rates
   }
 
   override fun onCleared() {
     super.onCleared()
-    serviceDisposable.dispose()
-  }
-
-  fun newUserInput(value: Double) {
-    _userInputValue.value = value
+    repository.stopPollingRates()
   }
 
 }

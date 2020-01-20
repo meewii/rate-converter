@@ -9,4 +9,6 @@
   <string name="currency_name_aud">Australian Dollar</string>
   <string name="currency_name_gbp">Pound sterling</string>
   <string name="currency_name_usa">United States Dollar</string>
+  <string name="network_error">Error: Please check your internet connection.</string>
+  <string name="invalid_response_error">Error: the rate reponse is invalid.</string>
 </resources>

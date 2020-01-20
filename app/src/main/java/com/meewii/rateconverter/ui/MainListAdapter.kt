@@ -12,25 +12,30 @@ import kotlinx.android.synthetic.main.li_rate_input.view.ui_value
 import timber.log.Timber
 import java.util.Locale
 
-class MainListAdapter(private val onClickItem: (Rate) -> Unit,
-                      private val onUserInput: (Double) -> Unit) :
+class MainListAdapter(
+  private val onClickItem: (Rate) -> Unit,
+  private val onUserInput: (Double) -> Unit
+) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  class InputViewHolder(private val binding: LiRateInputBinding,
-                        private val onUserInput: (Double) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+  class InputViewHolder(
+    private val binding: LiRateInputBinding,
+    private val onUserInput: (Double) -> Unit
+  ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Rate) {
       binding.apply {
         rate = item
         executePendingBindings()
       }
       itemView.ui_value.addTextChangedListener {
-        Timber.v("AAA $it")
-        onUserInput(try {
-          it.toString().toDouble()
-        } catch (e: NumberFormatException) {
-          Timber.w("NumberFormatException user input is not a number or is empty. Value reset to 1.")
-          1.0
-        })
+        onUserInput(
+          try {
+            it.toString().toDouble()
+          } catch (e: NumberFormatException) {
+            Timber.w("NumberFormatException user input is not a number or is empty. Value reset to 1.")
+            1.0
+          }
+        )
       }
     }
   }
@@ -88,7 +93,12 @@ class MainListAdapter(private val onClickItem: (Rate) -> Unit,
 
 @BindingAdapter("app:rateValue")
 fun EditText.setRateValue(rateValue: Double) {
-  setText(String.format(Locale.getDefault(), "%.4f", rateValue))
+  // TBD in ACs: when should the value display 4 digits after the comma, and when should it display only 2
+  if (rateValue > 9) {
+    setText(String.format(Locale.getDefault(), "%.2f", rateValue))
+  } else {
+    setText(String.format(Locale.getDefault(), "%.4f", rateValue))
+  }
 }
 
 @BindingAdapter("app:inputValue")

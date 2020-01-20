@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.meewii.rateconverter.R
+import com.meewii.rateconverter.business.InvalidResponseException
+import com.meewii.rateconverter.business.TooManyAttemptsException
 import com.meewii.rateconverter.core.gone
 import com.meewii.rateconverter.core.visible
 import dagger.android.AndroidInjection
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private val rateListObserver = Observer<List<Rate>> { rates ->
+    Timber.d("Rates? ${rates.size}")
     rates?.let {
       viewAdapter.setData(rates)
     }
@@ -41,7 +44,14 @@ class MainActivity : AppCompatActivity() {
       is ViewStatus.Error -> {
         ui_swipe_container.isRefreshing = false
         ui_error_message.visible()
-        ui_error_message.text = status.message ?: getString(R.string.unknown_error)
+
+        // TBD: handling error to be defined by ACs, including which HTTP exceptions
+        when (status.throwable) {
+          is TooManyAttemptsException -> ui_error_message.text = getString(R.string.network_error)
+          is InvalidResponseException -> ui_error_message.text = getString(R.string.invalid_response_error)
+          is Exception -> ui_error_message.text = status.throwable.message ?: getString(R.string.network_error)
+          else -> ui_error_message.text = status.message ?: getString(R.string.unknown_error)
+        }
       }
       else -> {
         ui_error_message.gone()
@@ -56,7 +66,6 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     ui_swipe_container.setOnRefreshListener {
-      Timber.v("AAA RefreshListener")
       mainViewModel.subscribeToRates()
     }
 
