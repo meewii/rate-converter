@@ -4,79 +4,80 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-    defaultConfig {
-        applicationId "com.meewii.rateconverter"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.2"
+  defaultConfig {
+    applicationId "com.meewii.rateconverter"
+    minSdkVersion 21
+    targetSdkVersion 29
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+  }
 
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
+  compileOptions {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+  }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
 
-    dataBinding { enabled = true }
+  dataBinding { enabled = true }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.kotlinVersion"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.kotlinVersion"
 
-    implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
-    implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
-    implementation "com.google.android.material:material:$rootProject.materialVersion"
-    implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerVersion"
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+  implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
+  implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
+  implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+  implementation "com.google.android.material:material:$rootProject.materialVersion"
+  implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerVersion"
+  implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
-    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycle"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycle"
+  implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycle"
+  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycle"
 
-    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
-    implementation "com.squareup.okhttp3:okhttp:3.11.0"
-    implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
-    implementation(group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.3.0') {
-        exclude module: 'okhttp'
-    }
+  implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+  implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+  implementation "com.squareup.okhttp3:okhttp:3.11.0"
+  implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
+  implementation(group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.3.0') {
+    exclude module: 'okhttp'
+  }
 
-    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+  implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+  kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+  implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
+  kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
 
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
-    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
+  implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+  implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
+  implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
 
-    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+  implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+  implementation 'com.github.bumptech.glide:glide:4.11.0'
+  kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'androidx.test:core:1.2.0'
-    testImplementation "org.robolectric:robolectric:$rootProject.robolectricVersion"
-    testImplementation 'androidx.test.ext:junit:1.1.1'
-    testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$rootProject.mockitoKtVersion"
-    testImplementation "com.google.truth:truth:$rootProject.truthVersion"
-    testImplementation 'com.jraska.livedata:testing-ktx:1.1.1'
+  testImplementation 'junit:junit:4.12'
+  testImplementation 'androidx.test:core:1.2.0'
+  testImplementation "org.robolectric:robolectric:$rootProject.robolectricVersion"
+  testImplementation 'androidx.test.ext:junit:1.1.1'
+  testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+  testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
+  testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$rootProject.mockitoKtVersion"
+  testImplementation "com.google.truth:truth:$rootProject.truthVersion"
+  testImplementation 'com.jraska.livedata:testing-ktx:1.1.1'
+  kaptTest "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+  kaptTest "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
 
 }

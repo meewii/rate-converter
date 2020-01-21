@@ -14,8 +14,8 @@ import java.util.Locale
 /**
  * View holder of the 1st line of the list, it can take the input of the user
  */
-class InputViewHolder(private val binding: LiRateInputBinding, private val onUserInput: (Double) -> Unit)
-  : RecyclerView.ViewHolder(binding.root) {
+class InputViewHolder(private val binding: LiRateInputBinding, private val onUserInput: (Double) -> Unit) :
+  RecyclerView.ViewHolder(binding.root) {
 
   private val textWatcher: TextWatcher = object : TextWatcher {
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -47,8 +47,8 @@ class InputViewHolder(private val binding: LiRateInputBinding, private val onUse
 /**
  * View holder of the all Rates received by the server
  */
-class DisplayViewHolder(private val binding: LiRateDisplayBinding, private val onClickItem: (Rate) -> Unit)
-  : RecyclerView.ViewHolder(binding.root) {
+class DisplayViewHolder(private val binding: LiRateDisplayBinding, private val onClickItem: (Rate) -> Unit) :
+  RecyclerView.ViewHolder(binding.root) {
 
   fun bind(item: Rate) {
     binding.apply {
@@ -62,12 +62,7 @@ class DisplayViewHolder(private val binding: LiRateDisplayBinding, private val o
 
 @BindingAdapter("app:rateValue")
 fun EditText.setRateValue(rateValue: Double) {
-  // TBD in ACs: when should the value display 4 digits after the comma, and when should it display only 2
-  if (rateValue > 9) {
-    setText(String.format(Locale.getDefault(), "%.2f", rateValue))
-  } else {
-    setText(String.format(Locale.getDefault(), "%.4f", rateValue))
-  }
+  setText(String.format(Locale.getDefault(), "%.2f", rateValue))
 }
 
 @BindingAdapter("app:inputValue")

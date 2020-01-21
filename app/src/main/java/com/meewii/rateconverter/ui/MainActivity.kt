@@ -13,7 +13,6 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.ui_error_message
 import kotlinx.android.synthetic.main.activity_main.ui_recycler_view
 import kotlinx.android.synthetic.main.activity_main.ui_swipe_container
-import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +31,6 @@ class MainActivity : AppCompatActivity() {
   }
 
   private val rateListObserver = Observer<List<Rate>> { rates ->
-    Timber.d("Rates? ${rates.size}")
     rates?.let {
       viewAdapter.setData(rates)
     }

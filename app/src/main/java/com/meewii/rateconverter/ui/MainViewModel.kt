@@ -12,6 +12,10 @@ import javax.inject.Inject
 
 /**
  * ViewModel of MainActivity
+ * Combines 2 sources of data to display rate information:
+ * - the server data coming as a list of rates
+ * - the user input that serves as base rate multiplier
+ * This view model also takes care of the status of the view: Idle, Loading or Error
  */
 class MainViewModel @Inject constructor(private val pollManager: PollRateManager) : ViewModel() {
 
@@ -68,7 +72,7 @@ class MainViewModel @Inject constructor(private val pollManager: PollRateManager
     rates?.map {
       it.calculatedValue = userInput * it.rateValue
     }
-    combinedRates.value  = rates
+    combinedRates.value = rates
   }
 
   override fun onCleared() {
@@ -82,7 +86,18 @@ class MainViewModel @Inject constructor(private val pollManager: PollRateManager
  * Enhanced enum to reflect the status of the background process to the view
  */
 sealed class ViewStatus {
+  /**
+   * Success or Nothing
+   */
   object Idle : ViewStatus()
+
+  /**
+   * The view model is not yet ready to provide displayable data
+   */
   object Loading : ViewStatus()
+
+  /**
+   * Something went wrong
+   */
   data class Error(val message: String? = null, val throwable: Throwable? = null) : ViewStatus()
 }

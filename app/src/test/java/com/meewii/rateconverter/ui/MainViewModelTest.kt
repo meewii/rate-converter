@@ -16,7 +16,9 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.robolectric.annotation.Config
 
+@Config(manifest = Config.NONE)
 @RunWith(AndroidJUnit4::class)
 class MainViewModelTest {
   @get:Rule val rule: MockitoRule = MockitoJUnit.rule()
@@ -36,6 +38,9 @@ class MainViewModelTest {
   @Before
   fun setup() {
     sut = MainViewModel(pollRateManager)
+
+    val liveData = MutableLiveData<RateResponse>().apply { value = successRateResponse }
+    whenever(pollRateManager.rateResponse).thenReturn(liveData)
   }
 
   @Test
@@ -81,8 +86,6 @@ class MainViewModelTest {
   @Test
   fun `combine latest data`() {
     // Having
-    val liveData = MutableLiveData<RateResponse>().apply { value = successRateResponse }
-    whenever(pollRateManager.rateResponse).thenReturn(liveData)
     sut.initCombinedRates()
     val observer = sut.combinedRates.test()
 

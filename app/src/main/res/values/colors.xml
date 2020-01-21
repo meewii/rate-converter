@@ -7,7 +7,7 @@
     <color name="secondary">@color/blue</color>
     <color name="on_secondary">@color/white</color>
     <color name="secondary_dark">@color/blue_dark</color>
-    <color name="on_surface">@color/white</color>
+    <color name="on_surface">@color/black_primary</color>
     <color name="on_surface_secondary">@color/blue_grey</color>
     <color name="error">@color/red</color>
     <color name="on_error">@color/white</color>

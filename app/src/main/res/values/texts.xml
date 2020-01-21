@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme.Text" />
+  <style name="AppTheme.Text">
+  </style>
 
-    <style name="AppTheme.Text.Subtitle1">
-        <item name="android:textSize">16sp</item>
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="android:textColor">@color/on_surface</item>
-        <item name="android:lineSpacingExtra">5sp</item>
-    </style>
+  <style name="AppTheme.Text.Subtitle1">
+    <item name="android:textSize">16sp</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">@color/on_surface</item>
+    <item name="android:lineSpacingExtra">5sp</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+  </style>
 
-    <style name="AppTheme.Text.Body1">
-        <item name="android:textSize">14sp</item>
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="android:textColor">@color/on_surface_secondary</item>
-    </style>
+  <style name="AppTheme.Text.Body1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:letterSpacing">-0.01</item>
+    <item name="android:textColor">@color/on_surface_secondary</item>
+  </style>
 
-    <style name="AppTheme.Text.RateValue">
-        <item name="android:textSize">20sp</item>
-        <item name="android:letterSpacing">0.02</item>
-        <item name="android:textColor">@color/on_surface</item>
-    </style>
+  <style name="AppTheme.Text.RateValue">
+    <item name="android:textSize">20sp</item>
+    <item name="android:letterSpacing">0.02</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textColor">@drawable/selector_color_text_edit_text</item>
+  </style>
 
 </resources>
