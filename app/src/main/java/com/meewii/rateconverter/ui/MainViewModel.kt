@@ -26,15 +26,15 @@ class MainViewModel @Inject constructor(private val pollManager: PollRateManager
   val combinedRates = MediatorLiveData<List<Rate>>()
 
   @VisibleForTesting
-  internal var cachedBaseCurrency: String = DEFAULT_CURRENCY
+  internal var cachedBaseCurrency: String? = null
 
   /**
    * Start polling rates for the given base currency
    */
   fun subscribeToRates(currency: String? = null) {
     _viewStatus.value = ViewStatus.Loading
-    cachedBaseCurrency = currency ?: DEFAULT_CURRENCY
-    pollManager.startPollingRates(cachedBaseCurrency)
+    cachedBaseCurrency = currency ?: cachedBaseCurrency
+    pollManager.startPollingRates(cachedBaseCurrency ?: DEFAULT_CURRENCY)
   }
 
   /**
@@ -73,6 +73,10 @@ class MainViewModel @Inject constructor(private val pollManager: PollRateManager
       it.calculatedValue = userInput * it.rateValue
     }
     combinedRates.value = rates
+  }
+
+  fun stopPollingRates() {
+    pollManager.stopPollingRates()
   }
 
   override fun onCleared() {

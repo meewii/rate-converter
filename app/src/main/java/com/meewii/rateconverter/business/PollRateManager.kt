@@ -28,9 +28,9 @@ class PollRateManager @Inject constructor(private val service: RateService) {
 
   companion object {
     const val DEFAULT_CURRENCY = "EUR"
-    private const val POLL_INTERVAL_SEC = 1L
-    private const val ERROR_ATTEMPTS = 10     // TBD: exact value to be defined in Acceptance Criteria
-    private const val RETRY_DELAY_SEC = 3L    // TBD: exact value to be defined in Acceptance Criteria
+    private const val POLL_INTERVAL_SEC = 5L
+    private const val ERROR_ATTEMPTS = 10
+    private const val RETRY_DELAY_SEC = 3L
   }
 
   private val _rateResponse: MutableLiveData<RateResponse> = MutableLiveData()
@@ -54,13 +54,13 @@ class PollRateManager @Inject constructor(private val service: RateService) {
     shouldKeepPinging = true
 
     pollDisposable.dispose()
-    pollDisposable = Flowable.interval(POLL_INTERVAL_SEC, TimeUnit.SECONDS)
+    pollDisposable = Flowable.interval(0, POLL_INTERVAL_SEC, TimeUnit.SECONDS)
+      .subscribeOn(Schedulers.io())
       .flatMap { getRatesForBase(cachedBaseCurrency) }
       .retryWhen { errors ->
         errors.flatMap {
           if (++attemptCount < ERROR_ATTEMPTS) {
             Timber.w("Retrying after attempt number ${attemptCount}.")
-            // TBD in ACs: should user be informed right away or only after all retries were attempted?
             Flowable.timer(RETRY_DELAY_SEC, TimeUnit.SECONDS, Schedulers.io())
           } else {
             Timber.w("Too many attempts, sending error.")
@@ -68,7 +68,6 @@ class PollRateManager @Inject constructor(private val service: RateService) {
           }
         }
       }
-      .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe({ rateResponse ->
         _rateResponse.value = rateResponse

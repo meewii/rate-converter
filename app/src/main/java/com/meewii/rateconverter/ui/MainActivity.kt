@@ -75,9 +75,17 @@ class MainActivity : AppCompatActivity() {
     mainViewModel.apply {
       combinedRates.observe(this@MainActivity, rateListObserver)
       viewStatus.observe(this@MainActivity, statusObserver)
-      subscribeToRates()
       initCombinedRates()
     }
   }
 
+  override fun onResume() {
+    super.onResume()
+    mainViewModel.subscribeToRates()
+  }
+
+  override fun onPause() {
+    super.onPause()
+    mainViewModel.stopPollingRates()
+  }
 }
