@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item
+      android:id="@+id/text_style"
+      android:icon="@drawable/ic_sort_24px"
+      android:title="@string/menu_group_filters_title"
+      app:showAsAction="ifRoom">
+
+    <menu>
+      <group
+          android:id="@+id/text_color_group">
+        <item
+            android:id="@+id/action_sort_by_name"
+            android:title="@string/menu_action_sort_by_currency_name" />
+
+        <item
+            android:id="@+id/action_sort_by_ascending_rate"
+            android:title="@string/menu_action_sort_by_ascending_rate" />
+
+        <item
+            android:id="@+id/action_sort_by_descending_rate"
+            android:title="@string/menu_action_sort_by_descending_rate" />
+
+      </group>
+    </menu>
+
+  </item>
+
+  <item
+      android:id="@+id/action_about"
+      android:icon="@drawable/ic_info_24px"
+      android:title="@string/menu_action_about"
+      app:showAsAction="ifRoom" />
+
+</menu>

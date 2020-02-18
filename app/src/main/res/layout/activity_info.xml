@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/ui_toolbar"
+      style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:elevation="4dp"
+      app:title="@string/info_activity_title" />
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingTop="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:text="@string/info_author_title"
+      android:textAppearance="?attr/textAppearanceSubtitle2" />
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:text="@string/info_author_desc"
+      android:textAppearance="?attr/textAppearanceBody1" />
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingTop="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:text="@string/info_credits_title"
+      android:textAppearance="?attr/textAppearanceSubtitle2" />
+
+  <TextView
+      android:id="@+id/ui_credit_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:textAppearance="?attr/textAppearanceBody1" />
+
+</LinearLayout>

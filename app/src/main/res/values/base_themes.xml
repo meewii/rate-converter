@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryVariant">@color/primary_variant</item>
+    <item name="colorSecondary">@color/secondary</item>
+    <item name="colorSecondaryVariant">@color/color_secondary_variant</item>
+    <item name="colorError">@color/error</item>
+    <item name="colorSurface">@color/surface</item>
+    <item name="android:colorBackground">@color/background</item>
+
+    <item name="colorOnPrimary">@color/on_primary</item>
+    <item name="colorOnSecondary">@color/on_secondary</item>
+    <item name="colorOnError">@color/on_error</item>
+    <item name="colorOnSurface">@color/on_surface_primary</item>
+    <item name="colorOnBackground">@color/on_surface_primary</item>
+
+    <item name="textAppearanceHeadline1">@style/AppTheme.TextAppearance.Headline1</item>
+    <item name="textAppearanceHeadline2">@style/AppTheme.TextAppearance.Headline2</item>
+    <item name="textAppearanceHeadline3">@style/AppTheme.TextAppearance.Headline3</item>
+    <item name="textAppearanceHeadline4">@style/AppTheme.TextAppearance.Headline4</item>
+    <item name="textAppearanceHeadline5">@style/AppTheme.TextAppearance.Headline5</item>
+    <item name="textAppearanceHeadline6">@style/AppTheme.TextAppearance.Headline6</item>
+    <item name="textAppearanceSubtitle1">@style/AppTheme.TextAppearance.Subtitle1</item>
+    <item name="textAppearanceSubtitle2">@style/AppTheme.TextAppearance.Subtitle2</item>
+    <item name="textAppearanceBody1">@style/AppTheme.TextAppearance.Body1</item>
+    <item name="textAppearanceBody2">@style/AppTheme.TextAppearance.Body2</item>
+    <item name="textAppearanceCaption">@style/AppTheme.TextAppearance.Caption</item>
+    <item name="textAppearanceOverline">@style/AppTheme.TextAppearance.Overline</item>
+    <item name="textAppearanceListItem">@style/AppTheme.TextAppearance.ListItem</item>
+    <item name="textAppearanceListItemSecondary">@style/AppTheme.TextAppearance.ListItemSecondary</item>
+  </style>
+
+  <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <item name="colorPrimary">@color/cyan_50</item>
+    <item name="colorOnSurface">@color/white</item>
+    <item name="colorError">@color/red_500</item>
+    <item name="textInputStyle">@style/AppTheme.TextInputLayout.Style</item>
+  </style>
+
+</resources>

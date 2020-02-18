@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:minHeight="72dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    tools:background="?colorPrimary">
+
+  <ImageView
+      android:id="@+id/ui_flag"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_margin="16dp"
+      android:contentDescription="@string/flag_description"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/ui_currency_code"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/ui_currency_code"
+      style="@style/AppTheme.TextAppearance.ListItem.Light"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="72dp"
+      app:layout_constraintBottom_toTopOf="@+id/ui_currency_name"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_chainStyle="packed"
+      tools:text="EUR" />
+
+  <TextView
+      android:id="@+id/ui_currency_name"
+      style="@style/AppTheme.TextAppearance.ListItemSecondary.Light"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="72dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/ui_currency_code"
+      tools:text="Euro" />
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/ui_input_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginEnd="16dp"
+      android:minWidth="140dp"
+      android:theme="@style/AppTheme.TextInputLayout"
+      app:hintEnabled="false"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/ui_barrier"
+      app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/ui_user_input_value"
+        style="@style/AppTheme.TextInputLayout.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="1" />
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/ui_barrier"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="end"
+      app:constraint_referenced_ids="ui_currency_name,ui_currency_code"
+      tools:layout_editor_absoluteX="411dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

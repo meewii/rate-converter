@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme (semantic names) -->
-    <color name="primary">@color/white</color>
-    <color name="on_primary">@color/black_primary</color>
-    <color name="primary_dark">@color/grey_light</color>
-    <color name="secondary">@color/blue</color>
-    <color name="on_secondary">@color/white</color>
-    <color name="secondary_dark">@color/blue_dark</color>
-    <color name="on_surface">@color/black_primary</color>
-    <color name="on_surface_secondary">@color/blue_grey</color>
-    <color name="error">@color/red</color>
-    <color name="on_error">@color/white</color>
-    <color name="background">@color/white</color>
-    <color name="surface">@color/white</color>
-    <color name="separator">@color/blue_grey_light</color>
 
-    <!-- Palette (color names) -->
-    <color name="white">#FFF</color>
-    <color name="grey_light">#fafafa</color>
-    <color name="blue_grey">#8B959E</color>
-    <color name="blue_grey_light">#CED5DB</color>
-    <color name="black">#000</color>
-    <color name="black_primary">#191C1F</color>
-    <color name="red">#f44336</color>
-    <color name="blue">#0075EB</color>
-    <color name="blue_dark">#0000EE</color>
+  <color name="primary">@color/cyan_900</color>
+  <color name="primary_variant">@color/cyan_900_dark</color>
+  <color name="secondary">@color/orange_400</color>
+  <color name="color_secondary_variant">@color/orange_400_dark</color>
+  <color name="error">@color/red_500</color>
+  <color name="surface">@color/white</color>
+  <color name="background">@color/white</color>
+
+  <color name="on_primary">@color/white</color>
+  <color name="on_secondary">@color/black</color>
+  <color name="on_error">@color/white</color>
+  <color name="on_surface_primary">@color/black_a87</color>
+  <color name="on_surface_secondary">@color/black_a54</color>
+
 </resources>

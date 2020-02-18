@@ -1,0 +1,107 @@
+<resources>
+  <string name="app_name">Convertisseur de devise</string>
+
+  <string name="main_activity_title">Convertisseur de devise</string>
+  <string name="info_activity_title">A propos de cette appli</string>
+
+  <string name="menu_action_about">Info</string>
+  <string name="menu_group_filters_title">Trier les devises</string>
+  <string name="menu_action_sort_by_currency_name">Par nom</string>
+  <string name="menu_action_sort_by_ascending_rate">Par taux croissant</string>
+  <string name="menu_action_sort_by_descending_rate">Par taux décroissant</string>
+
+  <string name="info_author_title">Autrice</string>
+  <string name="info_author_desc">Currency Converter est une application créée par Marie-Anne Sinfreu.</string>
+  <string name="info_credits_app_icon">Icone de l\'application créée par</string>
+  <string name="info_credits_flags_icon">Drapeaux créés par</string>
+  <string name="info_credits_from">depuis le site</string>
+  <string name="info_credits_title">Attributions et Remerciements</string>
+
+  <string name="error_unknown">Une erreur inconnue est survenue</string>
+  <string name="error_no_network">Erreur de chargement, vérifiez votre connexion internet.</string>
+  <string name="error_invalid_response">Erreur: la liste de devises est invalide!</string>
+
+  <string name="flag_description">Drapeau de la devise</string>
+
+  <string name="currency_name_not_found">Devise inconnue</string>
+
+  <string name="currency_name_AED">UAE Dirham</string>
+  <string name="currency_name_AMD">Armenian DRM</string>
+  <string name="currency_name_AUD">Australian Dollar</string>
+  <string name="currency_name_AWG">Aruban Florin</string>
+  <string name="currency_name_AZN">Azerbaijani Manat</string>
+  <string name="currency_name_BAM">Bosnia &amp; Herzogovina Convertible Mark</string>
+  <string name="currency_name_BDT">Bangladeshi Taka</string>
+  <string name="currency_name_BGN">Bulgarian Lev</string>
+  <string name="currency_name_BHD">Bahraini Dinar</string>
+  <string name="currency_name_BMD">Bermudan Dollar</string>
+  <string name="currency_name_BOB">Bolivian Bolivano</string>
+  <string name="currency_name_BRL">Brazilian Real</string>
+  <string name="currency_name_BYN">Belarusian Ruble</string>
+  <string name="currency_name_BZD">Belize Dollar</string>
+  <string name="currency_name_CAD">Canadian Dollar</string>
+  <string name="currency_name_CHF">Swiss Franc</string>
+  <string name="currency_name_CLP">Chilean Peso</string>
+  <string name="currency_name_CNY">Chinese Yuan</string>
+  <string name="currency_name_CUC">Cuban Convertible Peso</string>
+  <string name="currency_name_CZK">Czech Koruna</string>
+  <string name="currency_name_DKK">Danish Krone</string>
+  <string name="currency_name_EGP">Egyptian Pound</string>
+  <string name="currency_name_EUR">Euro</string>
+  <string name="currency_name_GBP">Great Britain Pound Sterling</string>
+  <string name="currency_name_GEL">Georgian Lari</string>
+  <string name="currency_name_HKD">Hong Kong Dollar</string>
+  <string name="currency_name_HRK">Croatian Kuna</string>
+  <string name="currency_name_HTG">Haitian Gourd</string>
+  <string name="currency_name_HUF">Hungarian Forint</string>
+  <string name="currency_name_IDR">Indonesian Rupiah</string>
+  <string name="currency_name_ILS">Israeli Shekel</string>
+  <string name="currency_name_INR">Indian Rupee</string>
+  <string name="currency_name_IQD">Iraqi Dinar</string>
+  <string name="currency_name_IRR">Iranian Real</string>
+  <string name="currency_name_ISK">Icelandic Krona</string>
+  <string name="currency_name_JMD">Jamaican Dollar</string>
+  <string name="currency_name_JPY">Japanese Yen</string>
+  <string name="currency_name_KGS">Kyrgystani Som</string>
+  <string name="currency_name_KHR">Cambodian Riel</string>
+  <string name="currency_name_KRW">South Korean Won</string>
+  <string name="currency_name_KZT">Khazakstani Tenge</string>
+  <string name="currency_name_KWD">Kuwaiti Dinar</string>
+  <string name="currency_name_LAK">Laotian Kip</string>
+  <string name="currency_name_LBP">Lebanese Pound</string>
+  <string name="currency_name_LKR">Sri Lankan Rupee</string>
+  <string name="currency_name_MAD">Moroccan Dirham</string>
+  <string name="currency_name_MDL">Moldovan Leu</string>
+  <string name="currency_name_MKK">Myanmar Kyat</string>
+  <string name="currency_name_MOP">Macau Pataca</string>
+  <string name="currency_name_MXN">Mexican Peso</string>
+  <string name="currency_name_MYR">Malaysian Ringgit</string>
+  <string name="currency_name_NOK">Norwegian Krone</string>
+  <string name="currency_name_NPR">Nepalese Rupee</string>
+  <string name="currency_name_NZD">New Zealand Dollar</string>
+  <string name="currency_name_OMR">Omani Real</string>
+  <string name="currency_name_PHP">Philippine Piso</string>
+  <string name="currency_name_PKR">Pakistani Rupee</string>
+  <string name="currency_name_PLN">Polish Zloty</string>
+  <string name="currency_name_PGK">Papua New Guinean Kina</string>
+  <string name="currency_name_PYG">Paraguayan Guarani</string>
+  <string name="currency_name_QAR">Qatari Rial</string>
+  <string name="currency_name_RON">Romanian Leu</string>
+  <string name="currency_name_RSD">Serbian Dinar</string>
+  <string name="currency_name_RUB">Russian Ruble</string>
+  <string name="currency_name_SAR">Saudi Riyal</string>
+  <string name="currency_name_SEK">Swedish Krona</string>
+  <string name="currency_name_SGD">Singapore Dollar</string>
+  <string name="currency_name_THB">Thai Baht</string>
+  <string name="currency_name_TJS">Tajikistan Somoni</string>
+  <string name="currency_name_TMT">Turkmenistan Minat</string>
+  <string name="currency_name_TND">Tunisian Dinar</string>
+  <string name="currency_name_TRY">Turkish Lira</string>
+  <string name="currency_name_TWD">Taiwanese New Dollar</string>
+  <string name="currency_name_UAH">Ukrainian Hryvnia</string>
+  <string name="currency_name_USD">United States Dollar</string>
+  <string name="currency_name_UZS">Uzbekistani Som</string>
+  <string name="currency_name_VND">Vietnamese Dong</string>
+  <string name="currency_name_ZAR">South African Rand</string>
+  <string name="action_dismiss">Fermer</string>
+</resources>
