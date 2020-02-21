@@ -1,26 +1,28 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryVariant">@color/primary_dark</item>
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+  <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <item name="colorError">@color/error</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="android:colorBackground">@color/white</item>
+  <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+    <item name="titleTextColor">?attr/colorOnPrimary</item>
+    <item name="android:elevation">0dp</item>
+  </style>
 
-        <item name="colorOnPrimary">@color/on_primary</item>
-        <item name="colorOnSecondary">@color/on_secondary</item>
-        <item name="colorOnError">@color/on_error</item>
-        <item name="colorOnSurface">@color/on_surface</item>
-        <item name="colorOnBackground">@color/on_surface</item>
+  <style name="AppTheme.TextInputLayout.Style" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <item name="boxBackgroundColor">@color/white_a12</item>
+    <item name="boxStrokeWidth">1dp</item>
+  </style>
 
-        <item name="android:statusBarColor">@color/primary_dark</item>
-    </style>
+  <style name="AppTheme.TextInputLayout.EditText">
+    <item name="android:inputType">numberDecimal</item>
+    <item name="android:maxWidth">100dp</item>
+    <item name="android:maxLength">10</item>
+    <item name="android:gravity">end</item>
+    <item name="android:textColor">?attr/colorOnPrimary</item>
+    <item name="android:textAppearance">@style/AppTheme.TextAppearance.RateValue</item>
+  </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+  <style name="AppTheme.SnackBar" parent="Widget.MaterialComponents.Snackbar">
+    <item name="android:background">?attr/colorError</item>
+  </style>
 
 </resources>

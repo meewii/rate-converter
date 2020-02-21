@@ -7,7 +7,7 @@
 
     <variable
         name="rate"
-        type="com.meewii.rateconverter.ui.Rate" />
+        type="com.meewii.rateconverter.ui.Currency" />
 
     <variable
         name="onClickListener"
@@ -18,8 +18,8 @@
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="@{()-> onClickListener.invoke()}"
-      android:minHeight="72dp">
+      android:minHeight="72dp"
+      android:onClick="@{()-> onClickListener.invoke()}">
 
     <ImageView
         android:id="@+id/ui_flag"
@@ -32,19 +32,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ui_currency_code"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/secondary_dark" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ui_currency_code"
-        android:layout_width="0dp"
+        style="?textAppearanceListItem"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:text="@{rate.currencyCode}"
-        style="@style/AppTheme.Text.Subtitle1"
-        android:translationY="-2.62sp"
         app:layout_constraintBottom_toTopOf="@+id/ui_currency_name"
-        app:layout_constraintEnd_toStartOf="@+id/ui_value"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -52,34 +49,38 @@
 
     <TextView
         android:id="@+id/ui_currency_name"
-        android:layout_width="0dp"
+        style="?textAppearanceListItemSecondary"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
-        style="@style/AppTheme.Text.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ui_value"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ui_currency_code"
         app:textRes="@{rate.nameResId}"
         tools:text="Euro" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/ui_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/AppTheme.TextAppearance.RateValue"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="16dp"
-        android:maxWidth="120dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:inputType="number|textNoSuggestions"
-        style="@style/AppTheme.Text.RateValue"
+        android:minWidth="140dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ui_barrier"
         app:layout_constraintTop_toTopOf="parent"
         app:rateValue="@{rate.calculatedValue}"
-        android:enabled="false"
-        android:focusable="false"
         tools:text="1000.00" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/ui_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="ui_currency_name,ui_currency_code"
+        tools:layout_editor_absoluteX="411dp" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

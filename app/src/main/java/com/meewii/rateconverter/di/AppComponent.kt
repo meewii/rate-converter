@@ -1,7 +1,8 @@
 package com.meewii.rateconverter.di
 
 import com.meewii.rateconverter.App
-import com.meewii.rateconverter.business.network.di.NetworkModule
+import com.meewii.rateconverter.business.di.NetworkModule
+import com.meewii.rateconverter.business.di.StorageModule
 import com.meewii.rateconverter.di.viewmodels.ViewModelBinderModule
 import dagger.BindsInstance
 import dagger.Component
@@ -18,7 +19,9 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     AppModule::class,
     ActivityModule::class,
+    ClockModule::class,
     NetworkModule::class,
+    StorageModule::class,
     ViewModelBinderModule::class]
 )
 interface AppComponent : AndroidInjector<DaggerApplication> {

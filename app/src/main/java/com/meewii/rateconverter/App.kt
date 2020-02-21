@@ -1,7 +1,8 @@
 package com.meewii.rateconverter
 
 import android.app.Application
-import com.meewii.rateconverter.core.LineNumberDebugTree
+import com.jakewharton.threetenabp.AndroidThreeTen
+import com.meewii.rateconverter.common.LineNumberDebugTree
 import com.meewii.rateconverter.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -23,6 +24,7 @@ class App : Application(), HasAndroidInjector {
     if (BuildConfig.DEBUG) {
       Timber.plant(LineNumberDebugTree())
     }
+    AndroidThreeTen.init(this)
     DaggerAppComponent.builder().application(this)
       .build()
       .inject(this)

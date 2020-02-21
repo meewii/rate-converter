@@ -1,68 +1,46 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ui_main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <TextView
-      android:id="@+id/ui_toolbar"
-      android:layout_width="0dp"
-      android:layout_height="?attr/actionBarSize"
-      android:gravity="center_vertical"
-      android:paddingStart="72dp"
-      android:paddingEnd="16dp"
-      android:text="@string/main_activity_title"
-      android:textAppearance="?attr/textAppearanceHeadline6"
-      app:layout_constraintBottom_toTopOf="@+id/ui_error_message"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-  <TextView
-      android:id="@+id/ui_error_message"
-      android:layout_width="0dp"
+  <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/ui_appbar"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/surface"
-      android:drawableStart="@drawable/ic_warning_24px"
-      android:drawablePadding="@dimen/margin_medium"
-      android:padding="@dimen/margin_medium"
-      android:textColor="@color/error"
-      android:visibility="gone"
       app:layout_constraintBottom_toTopOf="@+id/ui_swipe_container"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/ui_toolbar"
-      tools:text="Some error message"
-      tools:visibility="visible" />
+      app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/ui_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        style="@style/AppTheme.Toolbar"
+        app:title="@string/main_activity_title" />
+
+    <include
+        android:id="@+id/ui_rate_input"
+        layout="@layout/inc_rate_input" />
+
+  </com.google.android.material.appbar.AppBarLayout>
 
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
       android:id="@+id/ui_swipe_container"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      app:layout_constraintBottom_toTopOf="@+id/ui_credits"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/ui_error_message">
+      app:layout_constraintTop_toBottomOf="@+id/ui_appbar">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ui_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
-        android:paddingTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/margin_small"
         android:scrollbars="vertical" />
 
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-  <TextView
-      android:id="@+id/ui_credits"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:visibility="gone"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/ui_swipe_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
