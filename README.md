@@ -30,7 +30,7 @@ The release of the Alpha version of this app is waiting for Google's approval.
 - sorting options by name or rate value
 - instant conversion when a value is entered by the user
 - translated from English to German and French
-- [Available as Beta release on the Play Store] (https://play.google.com/store/apps/details?id=com.meewii.rateconverter)
+- [Available as Beta release on the Play Store](https://play.google.com/store/apps/details?id=com.meewii.rateconverter)
 
 ##### Version 1.1
 
