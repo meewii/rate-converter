@@ -1,11 +1,14 @@
 package com.meewii.rateconverter.business
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.meewii.rateconverter.business.preferences.UserPreferences
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.Config
@@ -18,10 +21,12 @@ class UserInputRepositoryTest {
   val rule: MockitoRule = MockitoJUnit.rule()
 
   private lateinit var sut: UserInputRepository
+  @Mock lateinit var userPreferencesMock: UserPreferences
 
   @Before
   fun setup() {
-    sut = UserInputRepository()
+    whenever(userPreferencesMock.getLastUserInput()).thenReturn(5.0)
+    sut = UserInputRepository(userPreferencesMock)
   }
 
   @Test
@@ -35,7 +40,7 @@ class UserInputRepositoryTest {
     stream.subscribe(testSubscriber)
 
     // then
-    testSubscriber.assertValue(1.0)
+    testSubscriber.assertValue(5.0)
   }
 
   @Test

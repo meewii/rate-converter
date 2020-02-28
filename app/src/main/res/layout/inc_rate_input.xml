@@ -62,8 +62,7 @@
         android:id="@+id/ui_user_input_value"
         style="@style/AppTheme.TextInputLayout.EditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="1" />
+        android:layout_height="wrap_content" />
 
   </com.google.android.material.textfield.TextInputLayout>
 

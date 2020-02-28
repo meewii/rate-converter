@@ -6,6 +6,7 @@ import com.jraska.livedata.test
 import com.meewii.rateconverter.R
 import com.meewii.rateconverter.RxImmediateSchedulerRule
 import com.meewii.rateconverter.business.ExchangeRateRepository
+import com.meewii.rateconverter.business.PinedCurrenciesRepository
 import com.meewii.rateconverter.business.RateList
 import com.meewii.rateconverter.business.TestException
 import com.meewii.rateconverter.business.UserInputRepository
@@ -14,7 +15,6 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Flowable
-import io.reactivex.Single
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +25,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.Config
 
-@Config(manifest = Config.NONE)
+@Config(manifest = Config.NONE, sdk = [28])
 @RunWith(AndroidJUnit4::class)
 class MainViewModelTest {
 
@@ -43,6 +43,7 @@ class MainViewModelTest {
   private lateinit var sut: MainViewModel
   @Mock lateinit var exchangeRateRepositoryMock: ExchangeRateRepository
   @Mock lateinit var userInputRepositoryMock: UserInputRepository
+  @Mock lateinit var pinedCurrenciesRepositoryMock: PinedCurrenciesRepository
   @Mock lateinit var userPreferencesMock: UserPreferences
 
   private val successRateList = RateList.Success(
@@ -50,28 +51,30 @@ class MainViewModelTest {
       Currency(
         currencyCode = "AUD", rateValue = 4.0, flagResId = R.drawable.ic_flag_aud,
         nameResId = R.string.currency_name_AUD
-      ),
+      ).apply { isPinned = false },
       Currency(
         currencyCode = "EUR", rateValue = 3.0, flagResId = R.drawable.ic_flag_eur,
         nameResId = R.string.currency_name_EUR
-      ),
+      ).apply { isPinned = false },
       Currency(
         currencyCode = "AED", rateValue = 2.0, flagResId = R.drawable.ic_flag_aed,
         nameResId = R.string.currency_name_AED
-      )
+      ).apply { isPinned = false }
     )
   )
 
-  val baseCurrencyEur = Currency(
+  private val baseCurrencyEur = Currency(
     currencyCode = "EUR", rateValue = 1.0, flagResId = R.drawable.ic_flag_eur,
     nameResId = R.string.currency_name_EUR
   )
 
   @Before
   fun setup() {
-    sut = MainViewModel(exchangeRateRepositoryMock, userInputRepositoryMock, userPreferencesMock)
+    sut = MainViewModel(exchangeRateRepositoryMock, userInputRepositoryMock,
+      pinedCurrenciesRepositoryMock, userPreferencesMock)
 
     whenever(userPreferencesMock.getSortingOrder()).thenReturn(Order.DEFAULT)
+    whenever(userPreferencesMock.getBaseCurrency()).thenReturn("EUR")
   }
 
   @After
@@ -99,12 +102,12 @@ class MainViewModelTest {
   @Test
   fun `force refresh API`() {
     // having
-    whenever(exchangeRateRepositoryMock.getApiRates(any())).thenReturn(Single.just(successRateList))
+    whenever(exchangeRateRepositoryMock.getApiCombinedRates(any())).thenReturn(Flowable.just(successRateList))
 
     // when
     sut.forceRefreshRates()
 
-    verify(exchangeRateRepositoryMock).getApiRates(any())
+    verify(exchangeRateRepositoryMock).getApiCombinedRates(any())
   }
 
   @Test
@@ -158,22 +161,6 @@ class MainViewModelTest {
     val viewStatusObserver = sut.viewStatus.test()
     viewStatusObserver.assertValue(ViewStatus.Error("error", TestException("too bad")))
   }
-
-  val unsortedList =
-    listOf(
-      Currency(
-        currencyCode = "AED", rateValue = 2.0, flagResId = R.drawable.ic_flag_aed,
-        nameResId = R.string.currency_name_AED
-      ),
-      Currency(
-        currencyCode = "EUR", rateValue = 3.0, flagResId = R.drawable.ic_flag_eur,
-        nameResId = R.string.currency_name_EUR
-      ),
-      Currency(
-        currencyCode = "AUD", rateValue = 4.0, flagResId = R.drawable.ic_flag_aud,
-        nameResId = R.string.currency_name_AUD
-      )
-    )
 
   @Test
   fun `sort list by ascendant rates`() {

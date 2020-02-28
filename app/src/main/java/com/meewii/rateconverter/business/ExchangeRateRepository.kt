@@ -12,7 +12,7 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.Disposables
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.Clock
 import org.threeten.bp.LocalDateTime
@@ -28,13 +28,15 @@ import javax.inject.Inject
  * - the server data coming as a list of rates
  * - the persisted data
  * - the user input that serves as base rate multiplier
+ * - if the currency was pinned by the user
  */
 @Reusable
 class ExchangeRateRepository @Inject constructor(
   private val service: ExchangeRateService,
   private val exchangeRateDao: ExchangeRateDao,
   private val clock: Clock,
-  private val userInputRepository: UserInputRepository
+  private val userInputRepository: UserInputRepository,
+  private val pinedCurrenciesRepository: PinedCurrenciesRepository
 ) {
 
   private var persistRatesDisposable = Disposables.disposed()
@@ -43,30 +45,43 @@ class ExchangeRateRepository @Inject constructor(
    * Get combined rates between user inputs and currency rate value
    */
   fun getCombinedRates(base: String): Flowable<RateList> {
-    return Flowable.combineLatest<RateList, Double, RateList>(
+    return Flowable.combineLatest<RateList, Double, Set<String>, RateList>(
       getRateListForBase(base),
       userInputRepository.getUserInputsStream(),
-      BiFunction { rateList: RateList, userInput: Double -> combineRates(rateList, userInput) })
+      pinedCurrenciesRepository.getPinedCurrencies(),
+      Function3 { rateList: RateList, userInput: Double, pinnedCurrencies: Set<String> ->
+        combineRates(rateList, userInput, pinnedCurrencies)
+      })
   }
 
   /**
    * Get rates from API combined with user inputs
    */
   fun getApiCombinedRates(base: String): Flowable<RateList> {
-    return Flowable.combineLatest<RateList, Double, RateList>(
+    return Flowable.combineLatest<RateList, Double, Set<String>, RateList>(
       getApiRates(base).toFlowable(),
       userInputRepository.getUserInputsStream(),
-      BiFunction { rateList: RateList, userInput: Double -> combineRates(rateList, userInput) })
+      pinedCurrenciesRepository.getPinedCurrencies(),
+      Function3 { rateList: RateList, userInput: Double, pinnedCurrencies: Set<String> ->
+        combineRates(rateList, userInput, pinnedCurrencies)
+      })
   }
 
   private fun getRateListForBase(base: String): Flowable<RateList> {
     return getDbRates(base).switchIfEmpty(getApiRates(base)).toFlowable()
   }
 
-  private fun combineRates(rateList: RateList, userInput: Double): RateList {
+  private fun combineRates(
+    rateList: RateList,
+    userInput: Double,
+    pinnedCurrencies: Set<String>
+  ): RateList {
     return when (rateList) {
       is RateList.Success -> {
-        rateList.currencies.map { it.calculatedValue = userInput * it.rateValue }
+        rateList.currencies.map {
+          it.calculatedValue = userInput * it.rateValue
+          it.isPinned = pinnedCurrencies.contains(it.currencyCode)
+        }
         rateList
       }
       else -> rateList

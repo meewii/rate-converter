@@ -22,6 +22,8 @@
   <string name="error_invalid_response">Error: the rate response is invalid.</string>
 
   <string name="flag_description">Currency flag</string>
+  <string name="action_add_to_favorite">Add to favorites</string>
+  <string name="info_credits_pin_icon">Pin icon made by</string>
 
   <string name="currency_name_not_found">Unknown currency</string>
 

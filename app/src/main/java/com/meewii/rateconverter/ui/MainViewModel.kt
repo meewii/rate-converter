@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.meewii.rateconverter.business.ExchangeRateRepository
+import com.meewii.rateconverter.business.PinedCurrenciesRepository
 import com.meewii.rateconverter.business.RateList
 import com.meewii.rateconverter.business.UserInputRepository
 import com.meewii.rateconverter.business.preferences.UserPreferences
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
   private val exchangeRateRepository: ExchangeRateRepository,
   private val userInputRepository: UserInputRepository,
+  private val pinedCurrenciesRepository: PinedCurrenciesRepository,
   private val userPreferences: UserPreferences
 ) : ViewModel() {
 
@@ -76,10 +78,11 @@ class MainViewModel @Inject constructor(
     _lastUserInput.value = userPreferences.getLastUserInput()
 
     combinedRatesDisposable.dispose()
-    combinedRatesDisposable = exchangeRateRepository.getCombinedRates(resetBaseCurrency(baseCurrency))
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe({ handleSuccessfulResponse(it) }, { handleFailedResponse(it) })
+    combinedRatesDisposable = exchangeRateRepository
+      .getCombinedRates(resetBaseCurrency(baseCurrency))
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe({ handleSuccessfulResponse(it) }, { handleFailedResponse(it) })
   }
 
   private fun resetBaseCurrency(baseCurrency: String? = null): String {
@@ -140,10 +143,10 @@ class MainViewModel @Inject constructor(
     sourceType: SourceType
   ): Currencies {
     return Currencies(when (order) {
-      Order.NAME -> list.sortedBy { it.currencyCode }
-      Order.ASCENDING_RATE -> list.sortedBy { it.calculatedValue }
-      Order.DESCENDING_RATE -> list.sortedByDescending { it.calculatedValue }
-      else -> list
+      Order.NAME -> list.sortedWith(compareByDescending<Currency> { it.isPinned }.thenBy { it.currencyCode })
+      Order.ASCENDING_RATE -> list.sortedWith(compareByDescending<Currency> { it.isPinned }.thenBy { it.calculatedValue })
+      Order.DESCENDING_RATE -> list.sortedWith(compareByDescending<Currency> { it.isPinned }.thenByDescending { it.calculatedValue })
+      else -> list.sortedByDescending { it.isPinned }
     }, sourceType)
   }
 
@@ -151,6 +154,13 @@ class MainViewModel @Inject constructor(
     super.onCleared()
     _sortedRates.removeSource(_combinedRates)
     combinedRatesDisposable.dispose()
+  }
+
+  /**
+   * Add or Remove currency code from pinned list
+   */
+  fun togglePinCurrency(currencyCode: String, isPinned: Boolean) {
+    pinedCurrenciesRepository.togglePinCurrency(currencyCode, isPinned)
   }
 }
 
