@@ -35,6 +35,7 @@ class ExchangeRateRepositoryTest {
   private lateinit var sut: ExchangeRateRepository
   @Mock lateinit var serviceMock: ExchangeRateService
   @Mock lateinit var userInputRepositoryMock: UserInputRepository
+  @Mock lateinit var pinedCurrenciesRepositoryMock: PinedCurrenciesRepository
   @Mock lateinit var daoMock: ExchangeRateDao
   @Mock lateinit var clockMock: Clock
 
@@ -73,11 +74,11 @@ class ExchangeRateRepositoryTest {
   }
 
   @Test
-  fun `get rates from DB with up-to-date data`() {
+  fun `get DB rates, the same day than now, after 16, should return data`() {
     // having
     val now = LocalDateTime.of(2019, 3, 5, 17, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
 
     val testObserver = sut.getDbRates("GBP").test()
     testObserver.awaitTerminalEvent()
@@ -87,13 +88,12 @@ class ExchangeRateRepositoryTest {
   }
 
   @Test
-  fun `get rates from DB before 16`() {
+  fun `get DB rates, the day after now, before 16, should return data`() {
     // having
-    val now = LocalDateTime.of(2019, 3, 6, 12, 0)
+    val now = LocalDateTime.of(2019, 3, 6, 11, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
 
-    // when
     val testObserver = sut.getDbRates("GBP").test()
     testObserver.awaitTerminalEvent()
 
@@ -101,13 +101,12 @@ class ExchangeRateRepositoryTest {
     testObserver.assertValue(successRateList)
   }
 
-
   @Test
-  fun `get rates from DB after 16`() {
+  fun `get DB rates, the day after now, after 16, should return nothing`() {
     // having
     val now = LocalDateTime.of(2019, 3, 6, 16, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
 
     // when
     val testObserver = sut.getDbRates("GBP").test()
@@ -118,11 +117,11 @@ class ExchangeRateRepositoryTest {
   }
 
   @Test
-  fun `get rates from DB with outdated data`() {
+  fun `get DB rates, several days after now, should return nothing`() {
     // having
     val now = LocalDateTime.of(2019, 3, 7, 17, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
 
     // when
     val testObserver = sut.getDbRates("GBP").test()
@@ -133,11 +132,26 @@ class ExchangeRateRepositoryTest {
   }
 
   @Test
-  fun `get rates from API`() {
+  fun `get DB rates, several days before now, should return data`() {
+    // having
+    val now = LocalDateTime.of(2019, 3, 4, 17, 0)
+    clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
+
+    // when
+    val testObserver = sut.getDbRates("GBP").test()
+    testObserver.awaitTerminalEvent()
+
+    // then
+    testObserver.assertValue(successRateList)
+  }
+
+  @Test
+  fun `get API rates, successful response, should parse to RateList Success`() {
     // having
     val now = LocalDateTime.of(2019, 3, 7, 17, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
     whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.just(apiResponse))
 
     // when
@@ -150,11 +164,43 @@ class ExchangeRateRepositoryTest {
   }
 
   @Test
-  fun `get rates from API with AUD base currency`() {
+  fun `get API rates, invalid response, should parse to RateList Error`() {
     // having
     val now = LocalDateTime.of(2019, 3, 7, 17, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
+    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.just(ExchangeRateService.ExchangeRateResponse()))
+
+    // when
+    val testObserver = sut.getApiRates("GBP").test()
+    testObserver.awaitTerminalEvent()
+
+    // then
+    testObserver.assertValue { it is RateList.Error }
+  }
+
+  @Test
+  fun `get API rates, error response, should forward error`() {
+    // having
+    val now = LocalDateTime.of(2019, 3, 7, 17, 0)
+    clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
+    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.error(TestException("error")))
+
+    // when
+    val testObserver = sut.getApiRates("GBP").test()
+    testObserver.awaitTerminalEvent()
+
+    // then
+    testObserver.assertError(TestException("error"))
+  }
+
+  @Test
+  fun `get API rates, with AUD base currency, AUD should be excluded from response`() {
+    // having
+    val now = LocalDateTime.of(2019, 3, 7, 17, 0)
+    clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
     whenever(serviceMock.getRatesForBase("AUD")).thenReturn(Single.just(apiResponse))
 
     // when
@@ -177,30 +223,48 @@ class ExchangeRateRepositoryTest {
   }
 
   @Test
-  fun `get rates API error`() {
+  fun `get combined API rates, with some pined currencies, should set corresponding pinned value to true`() {
     // having
     val now = LocalDateTime.of(2019, 3, 7, 17, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
-    whenever(serviceMock.getRatesForBase("AUD")).thenReturn(Single.error(TestException("Boo")))
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
+
+    whenever(serviceMock.getRatesForBase("AUD")).thenReturn(Single.just(apiResponse))
+    whenever(userInputRepositoryMock.getUserInputsStream()).thenReturn(Flowable.just(1.0))
+    whenever(pinedCurrenciesRepositoryMock.getPinedCurrencies()).thenReturn(Flowable.just(setOf("EUR", "PLN")))
 
     // when
-    val testObserver = sut.getApiRates("AUD").test()
+    val testObserver = sut.getApiCombinedRates("AUD").test()
     testObserver.awaitTerminalEvent()
 
     // then
-    testObserver.assertError(TestException("Boo"))
+    val rateList = RateList.Success(
+      listOf(
+        Currency(
+          currencyCode = "EUR", rateValue = 4.0, flagResId = R.drawable.ic_flag_eur,
+          nameResId = R.string.currency_name_EUR
+        ),
+        Currency(
+          currencyCode = "AED", rateValue = 2.0, flagResId = R.drawable.ic_flag_aed,
+          nameResId = R.string.currency_name_AED
+        )
+      )
+    )
+    testObserver.assertValue(rateList)
+    testObserver.assertValue { (it as RateList.Success).currencies[0].isPinned }
+    testObserver.assertValue { (it as RateList.Success).currencies[1].isPinned.not() }
   }
 
   @Test
-  fun `get updated data with different user input`() {
+  fun `get combined rates, with user input 2, should multiply rates by 2`() {
     // having
     val now = LocalDateTime.of(2019, 3, 6, 12, 0)
     clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
-    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock)
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
 
     whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.just(apiResponse))
     whenever(userInputRepositoryMock.getUserInputsStream()).thenReturn(Flowable.just(2.0))
+    whenever(pinedCurrenciesRepositoryMock.getPinedCurrencies()).thenReturn(Flowable.just(setOf()))
 
     // when
     val testSubscriber = sut.getCombinedRates("GBP").test()
@@ -210,6 +274,26 @@ class ExchangeRateRepositoryTest {
     testSubscriber.assertValue { (it as RateList.Success).currencies[0].calculatedValue == 6.0 }
     testSubscriber.assertValue { (it as RateList.Success).currencies[1].calculatedValue == 8.0 }
     testSubscriber.assertValue { (it as RateList.Success).currencies[2].calculatedValue == 4.0 }
+  }
+
+  //TODO change behavior of this case
+  @Test
+  fun `get combined rates, error from API, after 16`() {
+    // having
+    val now = LocalDateTime.of(2019, 3, 7, 17, 0)
+    clockMock = Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault())
+    sut = ExchangeRateRepository(serviceMock, daoMock, clockMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
+
+    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.error(TestException("error")))
+    whenever(userInputRepositoryMock.getUserInputsStream()).thenReturn(Flowable.just(1.0))
+    whenever(pinedCurrenciesRepositoryMock.getPinedCurrencies()).thenReturn(Flowable.just(setOf()))
+
+    // when
+    val testSubscriber = sut.getCombinedRates("GBP").test()
+    testSubscriber.awaitTerminalEvent()
+
+    // then
+    testSubscriber.assertError(TestException("error"))
   }
 
 }

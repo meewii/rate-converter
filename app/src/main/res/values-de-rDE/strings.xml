@@ -13,7 +13,7 @@
   <string name="info_author_title">Author</string>
   <string name="info_author_desc">Währungs Umrechner ist eine App von Marie-Anne Sinfreu.</string>
   <string name="info_credits_app_icon">App icon erstellt von</string>
-  <string name="info_credits_flags_icon">Country flags erstellt von</string>
+  <string name="info_credits_flags_icon">Länderflaggen erstellt von</string>
   <string name="info_credits_from">von</string>
   <string name="info_credits_title">Credits</string>
 
@@ -22,6 +22,8 @@
   <string name="error_invalid_response">Fehler: Die geleiferten Kurse sind fehlerhaft.</string>
 
   <string name="flag_description">Flagge</string>
+  <string name="action_add_to_favorite">Zu den Favoriten hinzufügen</string>
+  <string name="info_credits_pin_icon">Pin Icon erstellt von</string>
 
   <string name="currency_name_not_found">Unbekannte Währung</string>
 

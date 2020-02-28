@@ -13,6 +13,7 @@ data class Currency(
 ) {
 
   var calculatedValue: Double = rateValue
+  var isPinned: Boolean = false
 
   companion object {
 

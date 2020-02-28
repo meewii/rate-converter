@@ -28,6 +28,13 @@ class InfoActivity : AppCompatActivity() {
       "www.flaticon.com",
       "https://www.flaticon.com/",
       R.string.info_credits_flags_icon
+    ),
+    Credits(
+      "Freepik",
+      "https://www.flaticon.com/authors/freepik",
+      "www.flaticon.com",
+      "https://www.flaticon.com/",
+      R.string.info_credits_pin_icon
     )
   )
 

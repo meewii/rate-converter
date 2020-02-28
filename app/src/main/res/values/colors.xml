@@ -14,5 +14,6 @@
   <color name="on_error">@color/white</color>
   <color name="on_surface_primary">@color/black_a87</color>
   <color name="on_surface_secondary">@color/black_a54</color>
+  <color name="on_surface_disabled">@color/black_a12</color>
 
 </resources>

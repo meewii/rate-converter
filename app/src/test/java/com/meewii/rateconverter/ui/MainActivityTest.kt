@@ -46,10 +46,12 @@ class MainActivityTest {
   @Mock private lateinit var viewStatusLiveData: MutableLiveData<ViewStatus>
   @Mock private lateinit var sortedRatesLiveData: MutableLiveData<Currencies>
   @Mock private lateinit var baseCurrencyLiveData: MutableLiveData<Currency>
+  @Mock private lateinit var lastUserInputLiveData: MutableLiveData<Double>
 
   @Captor private lateinit var viewStatusObserverCaptor: ArgumentCaptor<Observer<ViewStatus>>
   @Captor private lateinit var sortedRatesObserverCaptor: ArgumentCaptor<Observer<Currencies>>
   @Captor private lateinit var baseCurrencyObserverCaptor: ArgumentCaptor<Observer<Currency>>
+  @Captor private lateinit var lastUserInputObserverCaptor: ArgumentCaptor<Observer<Double>>
 
   private val currencies = listOf(
     Currency(
@@ -80,6 +82,7 @@ class MainActivityTest {
     whenever(viewModel.viewStatus).thenReturn(viewStatusLiveData)
     whenever(viewModel.sortedRates).thenReturn(sortedRatesLiveData)
     whenever(viewModel.baseCurrency).thenReturn(baseCurrencyLiveData)
+    whenever(viewModel.lastUserInput).thenReturn(lastUserInputLiveData)
 
     activityController.create()
     activityController.start()
@@ -87,6 +90,7 @@ class MainActivityTest {
     verify(viewStatusLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), viewStatusObserverCaptor.capture())
     verify(sortedRatesLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), sortedRatesObserverCaptor.capture())
     verify(baseCurrencyLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), baseCurrencyObserverCaptor.capture())
+    verify(lastUserInputLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), lastUserInputObserverCaptor.capture())
   }
 
   @Test

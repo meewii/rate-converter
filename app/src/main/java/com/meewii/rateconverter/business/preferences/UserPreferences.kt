@@ -12,6 +12,7 @@ class UserPreferences @Inject constructor(private val sharedPreferences: SharedP
     private const val SORTING_ORDER_KEY = "SORTING_ORDER_KEY"
     private const val LAST_USER_INPUT_KEY = "LAST_USER_INPUT_KEY"
     private const val BASE_CURRENCY_KEY = "BASE_CURRENCY_KEY"
+    private const val PINED_CURRENCY_KEY = "PINED_CURRENCY_KEY"
   }
 
   fun setSortingOrder(order: Order) {
@@ -38,6 +39,14 @@ class UserPreferences @Inject constructor(private val sharedPreferences: SharedP
 
   fun getBaseCurrency(): String {
     return sharedPreferences.getString(BASE_CURRENCY_KEY, "EUR") ?: "EUR"
+  }
+
+  fun savePinedCurrencies(currencyCodes: Set<String>) {
+    sharedPreferences.edit().putStringSet(PINED_CURRENCY_KEY, currencyCodes).apply()
+  }
+
+  fun getPinedCurrencies(): Set<String> {
+    return sharedPreferences.getStringSet(PINED_CURRENCY_KEY, setOf()) ?: setOf()
   }
 
 }

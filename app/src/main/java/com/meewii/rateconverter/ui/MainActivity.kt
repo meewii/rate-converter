@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.inc_rate_input.view.ui_user_input_value
 import org.jetbrains.annotations.TestOnly
 import timber.log.Timber
 import java.net.UnknownHostException
+import java.util.Locale
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
@@ -37,13 +38,17 @@ class MainActivity : AppCompatActivity() {
   lateinit var mainViewModel: MainViewModel
 
   private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
-  private val viewAdapter: CurrencyListAdapter = CurrencyListAdapter(::onClickItem)
+  private val viewAdapter: CurrencyListAdapter = CurrencyListAdapter(::onClickItem, ::togglePinCurrency)
 
   @VisibleForTesting
   internal var snackBar: Snackbar? = null
 
   private fun onClickItem(currency: Currency) {
     mainViewModel.subscribeToRates(currency.currencyCode)
+  }
+
+  private fun togglePinCurrency(currency: Currency) {
+    mainViewModel.togglePinCurrency(currency.currencyCode, currency.isPinned.not())
   }
 
   private val rateValueTextWatcher: TextWatcher = object : TextWatcher {
@@ -87,9 +92,9 @@ class MainActivity : AppCompatActivity() {
   private val lastUserInputObserver = Observer<Double> { baseValue ->
     ui_rate_input.ui_user_input_value.apply {
       removeTextChangedListener(rateValueTextWatcher)
-      // place cursor after the value
-      setText("")
-      append(baseValue.toString())
+      val formattedVal = String.format(Locale.getDefault(), "%.2f", baseValue)
+      setText(formattedVal)
+      hint = String.format(Locale.getDefault(), "%.2f", 1.0)
       addTextChangedListener(rateValueTextWatcher)
     }
   }

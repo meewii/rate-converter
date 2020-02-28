@@ -13,6 +13,10 @@
         name="onClickListener"
         type="kotlin.jvm.functions.Function0" />
 
+    <variable
+        name="onAddToFavoriteListener"
+        type="kotlin.jvm.functions.Function0" />
+
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,14 +70,13 @@
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="16dp"
         android:autoSizeMaxTextSize="20sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="1sp"
         android:autoSizeTextType="uniform"
         android:minWidth="140dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ui_favorite_button"
         app:layout_constraintStart_toEndOf="@+id/ui_barrier"
         app:layout_constraintTop_toTopOf="parent"
         app:rateValue="@{rate.calculatedValue}"
@@ -86,6 +89,22 @@
         app:barrierDirection="end"
         app:constraint_referenced_ids="ui_currency_name,ui_currency_code"
         tools:layout_editor_absoluteX="411dp" />
+
+    <ToggleButton
+        android:id="@+id/ui_favorite_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/ic_pin_40"
+        android:checked="@{rate.pinned}"
+        android:onClick="@{()-> onAddToFavoriteListener.invoke()}"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ui_value"/>
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

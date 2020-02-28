@@ -10,7 +10,8 @@ import com.meewii.rateconverter.databinding.LiRateDisplayBinding
 /**
  * MainActivity's currency adapter
  */
-class CurrencyListAdapter(private val onClickItem: (Currency) -> Unit) :
+class CurrencyListAdapter(private val onClickItem: (Currency) -> Unit,
+                          private val togglePinCurrency: (Currency) -> Unit) :
   RecyclerView.Adapter<CurrencyViewHolder>() {
 
   @VisibleForTesting
@@ -19,7 +20,7 @@ class CurrencyListAdapter(private val onClickItem: (Currency) -> Unit) :
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
     val inflater = LayoutInflater.from(parent.context)
     val binding = LiRateDisplayBinding.inflate(inflater, parent, false)
-    return CurrencyViewHolder(binding, onClickItem)
+    return CurrencyViewHolder(binding, onClickItem, togglePinCurrency)
   }
 
   override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {

@@ -22,6 +22,8 @@
   <string name="error_invalid_response">Erreur: la liste de devises est invalide!</string>
 
   <string name="flag_description">Drapeau de la devise</string>
+  <string name="action_add_to_favorite">Ajouter aux favoris</string>
+  <string name="info_credits_pin_icon">Icone de punaise crée par</string>
 
   <string name="currency_name_not_found">Devise inconnue</string>
 
