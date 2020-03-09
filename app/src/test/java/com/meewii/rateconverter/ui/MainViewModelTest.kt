@@ -46,7 +46,7 @@ class MainViewModelTest {
   @Mock lateinit var pinedCurrenciesRepositoryMock: PinedCurrenciesRepository
   @Mock lateinit var userPreferencesMock: UserPreferences
 
-  private val successRateList = RateList.Success(
+  private val successRateList = RateList.Success("EUR",
     listOf(
       Currency(
         currencyCode = "AUD", rateValue = 4.0, flagResId = R.drawable.ic_flag_aud,
@@ -102,12 +102,12 @@ class MainViewModelTest {
   @Test
   fun `force refresh API`() {
     // having
-    whenever(exchangeRateRepositoryMock.getApiCombinedRates(any())).thenReturn(Flowable.just(successRateList))
+    whenever(exchangeRateRepositoryMock.getCombinedRates(any())).thenReturn(Flowable.just(successRateList))
 
     // when
     sut.forceRefreshRates()
 
-    verify(exchangeRateRepositoryMock).getApiCombinedRates(any())
+    verify(exchangeRateRepositoryMock).getCombinedRates(any())
   }
 
   @Test
@@ -117,12 +117,6 @@ class MainViewModelTest {
 
     // when
     sut.subscribeToRates("AUD")
-
-    val baseCurrencyObserver = sut.baseCurrency.test()
-    baseCurrencyObserver.assertValue(Currency(
-      currencyCode = "AUD", rateValue = 1.0, flagResId = R.drawable.ic_flag_aud,
-      nameResId = R.string.currency_name_AUD
-    ))
 
     val sortedRatesObserver = sut.sortedRates.test()
     sortedRatesObserver.assertValue(Currencies(successRateList.currencies, SourceType.RATE_VALUES))

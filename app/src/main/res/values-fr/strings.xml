@@ -20,6 +20,7 @@
   <string name="error_unknown">Une erreur inconnue est survenue</string>
   <string name="error_no_network">Erreur de chargement, vérifiez votre connexion internet.</string>
   <string name="error_invalid_response">Erreur: la liste de devises est invalide!</string>
+  <string name="error_currency_unavailable_db">La devise n\'est pas disponible. Vérifiez votre connexion internet.</string>
 
   <string name="flag_description">Drapeau de la devise</string>
   <string name="action_add_to_favorite">Ajouter aux favoris</string>
