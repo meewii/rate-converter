@@ -2,31 +2,35 @@ package com.meewii.rateconverter.business
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.meewii.rateconverter.business.preferences.UserPreferences
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE, sdk = [28])
 class UserInputRepositoryTest {
 
-  @get:Rule
-  val rule: MockitoRule = MockitoJUnit.rule()
-
   private lateinit var sut: UserInputRepository
-  @Mock lateinit var userPreferencesMock: UserPreferences
+  @MockK(relaxed = true) lateinit var userPreferencesMock: UserPreferences
 
   @Before
   fun setup() {
-    whenever(userPreferencesMock.getLastUserInput()).thenReturn(5.0)
+    MockKAnnotations.init(this)
+
+    every { userPreferencesMock.getLastUserInput() } returns 5.0
     sut = UserInputRepository(userPreferencesMock)
+  }
+
+  @After
+  fun breakdown() {
+    clearAllMocks()
   }
 
   @Test

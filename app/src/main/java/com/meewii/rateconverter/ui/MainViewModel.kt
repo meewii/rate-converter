@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
   val viewStatus: LiveData<ViewStatus> = _viewStatus
 
   private val _baseCurrency: MutableLiveData<Currency> = MutableLiveData<Currency>().apply {
-   this.value = Currency.toCurrency(cachedBaseCurrency, 1.0)
+    this.value = Currency.toCurrency(cachedBaseCurrency, 1.0)
   }
   val baseCurrency: LiveData<Currency> = _baseCurrency
   private val _lastUserInput = MediatorLiveData<Double>()
@@ -102,16 +102,9 @@ class MainViewModel @Inject constructor(
   }
 
   private fun handleSuccessfulResponse(rateList: RateList) {
-    when (rateList) {
-      is RateList.Success -> {
-        _combinedRates.value = rateList.currencies
-        _viewStatus.value = ViewStatus.Idle
-        updateBaseCurrency(rateList.baseCurrency)
-      }
-      is RateList.Error -> {
-        _viewStatus.value = ViewStatus.Error(rateList.errorMessage, rateList.error)
-      }
-    }
+    _combinedRates.value = rateList.currencies
+    _viewStatus.value = ViewStatus.Idle
+    updateBaseCurrency(rateList.baseCurrency)
   }
 
   private fun getBaseCurrency(baseCurrency: String? = null): String {

@@ -51,10 +51,10 @@ dependencies {
   implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycle"
   implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycle"
 
-  implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+  implementation "com.squareup.retrofit2:converter-gson:2.7.1"
   implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
-  implementation "com.squareup.okhttp3:okhttp:3.11.0"
-  implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
+  implementation "com.squareup.okhttp3:okhttp:4.0.1"
+  implementation "com.squareup.okhttp3:logging-interceptor:3.12.7"
   implementation(group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.3.0') {
     exclude module: 'okhttp'
   }
@@ -89,16 +89,15 @@ dependencies {
   testImplementation 'androidx.test.ext:junit:1.1.1'
   testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
   testImplementation "androidx.arch.core:core-testing:2.1.0"
-  testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
-  testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$rootProject.mockitoKtVersion"
   testImplementation "com.google.truth:truth:$rootProject.truthVersion"
   testImplementation 'com.jraska.livedata:testing-ktx:1.1.1'
   testImplementation "com.google.dagger:dagger:$rootProject.daggerVersion"
   testImplementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
+  testImplementation "io.mockk:mockk:$rootProject.mockkVersion"
   kaptTest "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
   kaptTest "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
 
-  testImplementation ('org.threeten:threetenbp:1.3.2'){
+  testImplementation ('org.threeten:threetenbp:1.4.1'){
     exclude group:'com.jakewharton.threetenabp', module:'threetenabp'
   }
 }

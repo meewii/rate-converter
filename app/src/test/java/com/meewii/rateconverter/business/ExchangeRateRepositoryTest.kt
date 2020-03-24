@@ -2,21 +2,22 @@ package com.meewii.rateconverter.business
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.meewii.rateconverter.R
+import com.meewii.rateconverter.RxImmediateSchedulerRule
 import com.meewii.rateconverter.business.database.ExchangeRateDao
 import com.meewii.rateconverter.business.database.ExchangeRateEntity
 import com.meewii.rateconverter.business.network.ExchangeRateService
 import com.meewii.rateconverter.ui.Currency
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.reactivex.Flowable
 import io.reactivex.Single
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.Config
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -25,14 +26,15 @@ import org.threeten.bp.LocalDateTime
 @Config(manifest = Config.NONE, sdk = [28])
 class ExchangeRateRepositoryTest {
 
-  @get:Rule
-  val rule: MockitoRule = MockitoJUnit.rule()
+  @Rule
+  @JvmField
+  val rxImmediateSchedulerRule = RxImmediateSchedulerRule()
 
   private lateinit var sut: ExchangeRateRepository
-  @Mock lateinit var serviceMock: ExchangeRateService
-  @Mock lateinit var userInputRepositoryMock: UserInputRepository
-  @Mock lateinit var pinedCurrenciesRepositoryMock: PinedCurrenciesRepository
-  @Mock lateinit var daoMock: ExchangeRateDao
+  @MockK lateinit var serviceMock: ExchangeRateService
+  @MockK lateinit var userInputRepositoryMock: UserInputRepository
+  @MockK lateinit var pinedCurrenciesRepositoryMock: PinedCurrenciesRepository
+  @MockK lateinit var daoMock: ExchangeRateDao
 
   private val entity = ExchangeRateEntity(
     "GBP",
@@ -40,7 +42,7 @@ class ExchangeRateRepositoryTest {
     mapOf("CAD" to 6.0, "AED" to 2.0)
   )
 
-  private val successDbRateList = RateList.Success("GBP",
+  private val successDbRateList = RateList("GBP",
     listOf(
       Currency(
         currencyCode = "CAD", rateValue = 6.0, flagResId = R.drawable.ic_flag_cad,
@@ -53,7 +55,7 @@ class ExchangeRateRepositoryTest {
     )
   )
 
-  private val successApiRateList = RateList.Success("GBP",
+  private val successApiRateList = RateList("GBP",
     listOf(
       Currency(
         currencyCode = "AUD", rateValue = 3.0, flagResId = R.drawable.ic_flag_aud,
@@ -79,13 +81,20 @@ class ExchangeRateRepositoryTest {
 
   @Before
   fun setup() {
+    MockKAnnotations.init(this)
+
     sut = ExchangeRateRepository(serviceMock, daoMock, userInputRepositoryMock, pinedCurrenciesRepositoryMock)
+  }
+
+  @After
+  fun breakdown() {
+    clearAllMocks()
   }
 
   @Test
   fun `get DB rates, with valid request, should return data as RateList`() {
     // having
-    whenever(daoMock.getRatesForBase(any())).thenReturn(Single.just(entity))
+    every { daoMock.getRatesForBase(any()) } returns Single.just(entity)
 
     val testSubscriber = sut.getDbRates("GBP").test()
     testSubscriber.awaitTerminalEvent()
@@ -97,7 +106,7 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get DB rates, with invalid request, should throw exception`() {
     // having
-    whenever(daoMock.getRatesForBase(any())).thenReturn(Single.error(TestException("err")))
+    every { daoMock.getRatesForBase(any()) } returns Single.error(TestException("err"))
 
     // when
     val testSubscriber = sut.getDbRates("GBP").test()
@@ -110,7 +119,7 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get API rates, successful response, should parse to RateList Success`() {
     // having
-    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.just(apiResponse))
+    every { serviceMock.getRatesForBase(any()) } returns Single.just(apiResponse)
 
     // when
     val testSubscriber = sut.getApiRates("GBP").test()
@@ -123,7 +132,7 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get API rates, invalid response, should throw an exception`() {
     // having
-    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.just(ExchangeRateService.ExchangeRateResponse()))
+    every { serviceMock.getRatesForBase(any()) } returns Single.just(ExchangeRateService.ExchangeRateResponse())
 
     // when
     val testSubscriber = sut.getApiRates("GBP").test()
@@ -136,8 +145,7 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get API rates, error in response, should throw an exception`() {
     // having
-    whenever(serviceMock.getRatesForBase(any()))
-      .thenReturn(Single.just(ExchangeRateService.ExchangeRateResponse(errorMessage = "Some error")))
+    every { serviceMock.getRatesForBase(any()) } returns Single.just(ExchangeRateService.ExchangeRateResponse(errorMessage = "Some error"))
 
     // when
     val testSubscriber = sut.getApiRates("GBP").test()
@@ -150,7 +158,7 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get API rates, error response, should forward error`() {
     // having
-    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.error(TestException("error")))
+    every { serviceMock.getRatesForBase(any()) } returns Single.error(TestException("error"))
 
     // when
     val testSubscriber = sut.getApiRates("GBP").test()
@@ -169,7 +177,7 @@ class ExchangeRateRepositoryTest {
       errorMessage = null,
       rates = mapOf("AUD" to 3.0, "EUR" to 4.0, "AED" to 2.0)
     )
-    whenever(serviceMock.getRatesForBase("AUD")).thenReturn(Single.just(apiResponse))
+    every { serviceMock.getRatesForBase("AUD") } returns Single.just(apiResponse)
 
     // when
     val testSubscriber = sut.getApiRates("AUD").test()
@@ -177,7 +185,7 @@ class ExchangeRateRepositoryTest {
 
     // then
     testSubscriber.assertValue(
-      RateList.Success("AUD",
+      RateList("AUD",
         listOf(
           Currency(
             currencyCode = "EUR", rateValue = 4.0, flagResId = R.drawable.ic_flag_eur,
@@ -195,28 +203,28 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get combined rates, with user input 2, should multiply rates by 2`() {
     // having
-    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.just(apiResponse))
-    whenever(daoMock.getRatesForBase(any())).thenReturn(Single.just(entity))
-    whenever(userInputRepositoryMock.getUserInputsStream()).thenReturn(Flowable.just(2.0))
-    whenever(pinedCurrenciesRepositoryMock.getPinedCurrencies()).thenReturn(Flowable.just(setOf()))
+    every { serviceMock.getRatesForBase(any()) } returns Single.just(apiResponse)
+    every { daoMock.getRatesForBase(any()) } returns Single.just(entity)
+    every { userInputRepositoryMock.getUserInputsStream() } returns Flowable.just(2.0)
+    every { pinedCurrenciesRepositoryMock.getPinedCurrencies() } returns Flowable.just(setOf())
 
     // when
     val testSubscriber = sut.getCombinedRates("GBP").test()
     testSubscriber.awaitTerminalEvent()
 
     // then
-    testSubscriber.assertValue { (it as RateList.Success).currencies[0].calculatedValue == 6.0 }
-    testSubscriber.assertValue { (it as RateList.Success).currencies[1].calculatedValue == 8.0 }
-    testSubscriber.assertValue { (it as RateList.Success).currencies[2].calculatedValue == 4.0 }
+    testSubscriber.assertValue { it.currencies[0].calculatedValue == 6.0 }
+    testSubscriber.assertValue { it.currencies[1].calculatedValue == 8.0 }
+    testSubscriber.assertValue { it.currencies[2].calculatedValue == 4.0 }
   }
 
   @Test
   fun `get combined rates, error from API, success from DB, should return DB data`() {
     // having
-    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.error(TestException("error")))
-    whenever(daoMock.getRatesForBase(any())).thenReturn(Single.just(entity))
-    whenever(userInputRepositoryMock.getUserInputsStream()).thenReturn(Flowable.just(1.0))
-    whenever(pinedCurrenciesRepositoryMock.getPinedCurrencies()).thenReturn(Flowable.just(setOf()))
+    every { serviceMock.getRatesForBase(any()) } returns Single.error(TestException("error"))
+    every { daoMock.getRatesForBase(any()) } returns Single.just(entity)
+    every { userInputRepositoryMock.getUserInputsStream() } returns Flowable.just(1.0)
+    every { pinedCurrenciesRepositoryMock.getPinedCurrencies() } returns Flowable.just(setOf())
 
     // when
     val testSubscriber = sut.getCombinedRates("GBP").test()
@@ -229,10 +237,10 @@ class ExchangeRateRepositoryTest {
   @Test
   fun `get combined rates, error from API and DB, should throw error`() {
     // having
-    whenever(serviceMock.getRatesForBase(any())).thenReturn(Single.error(ResponseErrorException("error")))
-    whenever(daoMock.getRatesForBase(any())).thenReturn(Single.error(TestException("error")))
-    whenever(userInputRepositoryMock.getUserInputsStream()).thenReturn(Flowable.just(1.0))
-    whenever(pinedCurrenciesRepositoryMock.getPinedCurrencies()).thenReturn(Flowable.just(setOf()))
+    every { serviceMock.getRatesForBase(any()) } returns Single.error(ResponseErrorException("error"))
+    every { daoMock.getRatesForBase(any()) } returns Single.error(TestException("error"))
+    every { userInputRepositoryMock.getUserInputsStream() } returns Flowable.just(1.0)
+    every { pinedCurrenciesRepositoryMock.getPinedCurrencies() } returns Flowable.just(setOf())
 
     // when
     val testSubscriber = sut.getCombinedRates("GBP").test()

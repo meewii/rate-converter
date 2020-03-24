@@ -183,8 +183,4 @@ class MainActivity : AppCompatActivity() {
     mainViewModel.subscribeToRates()
   }
 
-  @TestOnly
-  internal fun setTestViewModel(testViewModel: MainViewModel) {
-    mainViewModel = testViewModel
-  }
 }

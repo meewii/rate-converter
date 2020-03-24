@@ -18,9 +18,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * Repository in charge of fetching, storing and combining the rates with the user input.
+ * Repository in charge of fetching, storing and combining the rates with the user inputs to a RateList model.
  *
- * Combines 3 sources of data to display rate information:
+ * Combines 4 sources of data to display rate information:
  * - the server data coming as a list of rates
  * - the persisted data
  * - the user input that serves as base rate multiplier
@@ -58,16 +58,11 @@ class ExchangeRateRepository @Inject constructor(
     userInput: Double,
     pinnedCurrencies: Set<String>
   ): RateList {
-    return when (rateList) {
-      is RateList.Success -> {
-        rateList.currencies.map {
-          it.calculatedValue = userInput * it.rateValue
-          it.isPinned = pinnedCurrencies.contains(it.currencyCode)
-        }
-        rateList
-      }
-      else -> rateList
+    rateList.currencies.map {
+      it.calculatedValue = userInput * it.rateValue
+      it.isPinned = pinnedCurrencies.contains(it.currencyCode)
     }
+    return rateList
   }
 
   @VisibleForTesting
@@ -85,7 +80,7 @@ class ExchangeRateRepository @Inject constructor(
           // The European Central Bank usually rates only once a day around 16:00 CET
           val ldt = LocalDateTime.of(response.date, LocalTime.of(16, 0))
           persistExchangeRates(response.base, filteredRates, ldt)
-          Flowable.just(RateList.Success(response.base, toCurrencyList(filteredRates)))
+          Flowable.just(RateList(response.base, toCurrencyList(filteredRates)))
         }
       }
   }
@@ -94,7 +89,7 @@ class ExchangeRateRepository @Inject constructor(
   internal fun getDbRates(base: String): Flowable<RateList> {
     return exchangeRateDao.getRatesForBase(base)
       .subscribeOn(Schedulers.io())
-      .map<RateList> { RateList.Success(it.id, toCurrencyList(it.rates)) }
+      .map { RateList(it.id, toCurrencyList(it.rates)) }
       .toFlowable()
   }
 
@@ -111,7 +106,4 @@ class ExchangeRateRepository @Inject constructor(
 
 }
 
-sealed class RateList {
-  data class Error(val error: Throwable? = null, val errorMessage: String? = null) : RateList()
-  data class Success(val baseCurrency: String, val currencies: List<Currency>) : RateList()
-}
+data class RateList(val baseCurrency: String, val currencies: List<Currency>)
