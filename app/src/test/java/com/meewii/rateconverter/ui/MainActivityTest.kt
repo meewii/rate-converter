@@ -1,30 +1,27 @@
 package com.meewii.rateconverter.ui
 
 import android.app.Application
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth
 import com.meewii.rateconverter.R
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import dagger.android.AndroidInjector
 import dagger.android.HasAndroidInjector
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.android.synthetic.main.activity_main.ui_rate_input
 import kotlinx.android.synthetic.main.activity_main.ui_recycler_view
 import kotlinx.android.synthetic.main.activity_main.ui_swipe_container
-import kotlinx.android.synthetic.main.inc_rate_input.view.ui_currency_code
-import kotlinx.android.synthetic.main.inc_rate_input.view.ui_currency_name
+import kotlinx.android.synthetic.main.li_rate_display.view.ui_currency_code
+import kotlinx.android.synthetic.main.li_rate_display.view.ui_currency_name
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ActivityController
@@ -34,24 +31,16 @@ import org.robolectric.annotation.Config
 @Config(application = MainActivityTest.TestApp::class, sdk = [28])
 class MainActivityTest {
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @get:Rule val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+
+  private lateinit var mainViewModel: MainViewModel
+  private lateinit var viewStatusLiveData: MutableLiveData<ViewStatus>
+  private lateinit var sortedRatesLiveData: MutableLiveData<Currencies>
+  private lateinit var baseCurrencyLiveData: MutableLiveData<Currency>
+  private lateinit var lastUserInputLiveData: MutableLiveData<Double>
 
   private lateinit var activity: MainActivity
   private lateinit var activityController: ActivityController<MainActivity>
-
-  @Mock lateinit var viewModel: MainViewModel
-
-  @Mock private lateinit var viewStatusLiveData: MutableLiveData<ViewStatus>
-  @Mock private lateinit var sortedRatesLiveData: MutableLiveData<Currencies>
-  @Mock private lateinit var baseCurrencyLiveData: MutableLiveData<Currency>
-  @Mock private lateinit var lastUserInputLiveData: MutableLiveData<Double>
-
-  @Captor private lateinit var viewStatusObserverCaptor: ArgumentCaptor<Observer<ViewStatus>>
-  @Captor private lateinit var sortedRatesObserverCaptor: ArgumentCaptor<Observer<Currencies>>
-  @Captor private lateinit var baseCurrencyObserverCaptor: ArgumentCaptor<Observer<Currency>>
-  @Captor private lateinit var lastUserInputObserverCaptor: ArgumentCaptor<Observer<Double>>
 
   private val currencies = listOf(
     Currency(
@@ -69,40 +58,41 @@ class MainActivityTest {
   )
 
   private val baseCurrency = Currency(
-      currencyCode = "DKK", rateValue = 2.0, flagResId = R.drawable.ic_flag_dkk,
-      nameResId = R.string.currency_name_DKK
-    )
+    currencyCode = "DKK", rateValue = 2.0, flagResId = R.drawable.ic_flag_dkk,
+    nameResId = R.string.currency_name_DKK
+  )
 
   @Before
   fun setUp() {
     activityController = Robolectric.buildActivity(MainActivity::class.java)
     activity = activityController.get()
-    activity.setTestViewModel(viewModel)
+    activityController.setup()
 
-    whenever(viewModel.viewStatus).thenReturn(viewStatusLiveData)
-    whenever(viewModel.sortedRates).thenReturn(sortedRatesLiveData)
-    whenever(viewModel.baseCurrency).thenReturn(baseCurrencyLiveData)
-    whenever(viewModel.lastUserInput).thenReturn(lastUserInputLiveData)
+    activityScenarioRule.scenario.onActivity {
+      mainViewModel = activity.mainViewModel
+      viewStatusLiveData = mainViewModel.viewStatus as MutableLiveData<ViewStatus>
+      sortedRatesLiveData = mainViewModel.sortedRates as MutableLiveData<Currencies>
+      baseCurrencyLiveData = mainViewModel.baseCurrency as MutableLiveData<Currency>
+      lastUserInputLiveData = mainViewModel.lastUserInput as MutableLiveData<Double>
+    }
+  }
 
-    activityController.create()
-    activityController.start()
-
-    verify(viewStatusLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), viewStatusObserverCaptor.capture())
-    verify(sortedRatesLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), sortedRatesObserverCaptor.capture())
-    verify(baseCurrencyLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), baseCurrencyObserverCaptor.capture())
-    verify(lastUserInputLiveData).observe(ArgumentMatchers.any(LifecycleOwner::class.java), lastUserInputObserverCaptor.capture())
+  @After
+  fun breakdown() {
+    clearAllMocks()
+    activityScenarioRule.scenario.close()
   }
 
   @Test
   fun `displays list items`() {
-    sortedRatesObserverCaptor.value.onChanged(Currencies(currencies, SourceType.RATE_VALUES))
+    sortedRatesLiveData.value = Currencies(currencies, SourceType.RATE_VALUES)
 
     Truth.assertThat((activity.ui_recycler_view.adapter as? CurrencyListAdapter)?.data).isEqualTo(currencies)
   }
 
   @Test
   fun `displays base currency`() {
-    baseCurrencyObserverCaptor.value.onChanged(baseCurrency)
+    baseCurrencyLiveData.value = baseCurrency
 
     Truth.assertThat(activity.ui_rate_input.ui_currency_code.text).isEqualTo("DKK")
     Truth.assertThat(activity.ui_rate_input.ui_currency_name.text).isEqualTo("Danish Krone")
@@ -110,15 +100,15 @@ class MainActivityTest {
 
   @Test
   fun `displays loading wheel`() {
-    viewStatusObserverCaptor.value.onChanged(ViewStatus.Loading)
+    viewStatusLiveData.value = ViewStatus.Loading
 
     Truth.assertThat(activity.ui_swipe_container.isRefreshing).isTrue()
   }
 
   @Test
   fun `displays error snackbar`() {
-    baseCurrencyObserverCaptor.value.onChanged(baseCurrency)
-    viewStatusObserverCaptor.value.onChanged(ViewStatus.Error("oh la la"))
+    baseCurrencyLiveData.value = baseCurrency
+    viewStatusLiveData.value = ViewStatus.Error("oh la la")
 
     Truth.assertThat(activity.ui_swipe_container.isRefreshing).isFalse()
     Truth.assertThat(activity.snackBar?.isShown).isTrue()
@@ -130,9 +120,18 @@ class MainActivityTest {
       super.setTheme(R.style.AppTheme)
     }
 
+    private val viewModel = mockk<MainViewModel> {
+      every { viewStatus } returns MutableLiveData()
+      every { sortedRates } returns MutableLiveData()
+      every { baseCurrency } returns MutableLiveData()
+      every { lastUserInput } returns MutableLiveData()
+      every { subscribeToRates(any()) } returns Unit
+    }
+
     override fun androidInjector(): AndroidInjector<Any> {
       return AndroidInjector {
         val activity = it as MainActivity
+        activity.mainViewModel = viewModel
       }
     }
   }

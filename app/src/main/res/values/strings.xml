@@ -18,8 +18,9 @@
   <string name="info_credits_title">Credits</string>
 
   <string name="error_unknown">An unknown error occurred.</string>
-  <string name="error_no_network">Error: Please check your internet connection.</string>
-  <string name="error_invalid_response">Error: the rate response is invalid.</string>
+  <string name="error_no_network">Please check your internet connection.</string>
+  <string name="error_invalid_response">The rate response is invalid.</string>
+  <string name="error_currency_unavailable_db">The currency is not available. Check your internet connection.</string>
 
   <string name="flag_description">Currency flag</string>
   <string name="action_add_to_favorite">Add to favorites</string>

@@ -36,3 +36,7 @@ The release of the Alpha version of this app is waiting for Google's approval.
 
 - option to pin one currency to have it always at the top
 - fixed some bugs
+
+##### Version 1.2
+
+- rework of the ExchangeRateRepository, now the list of Rates is always fetched from API first, then fallback to DB if unavailable.

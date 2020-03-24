@@ -20,6 +20,7 @@
   <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten.</string>
   <string name="error_no_network">Fehler: Bitte übersprüfen Sie ihre Internetverbindung.</string>
   <string name="error_invalid_response">Fehler: Die geleiferten Kurse sind fehlerhaft.</string>
+  <string name="error_currency_unavailable_db">Die angeforderte Währung ist nicht verfügbar. Bitte überprüfe deine Internetverbindung.</string>
 
   <string name="flag_description">Flagge</string>
   <string name="action_add_to_favorite">Zu den Favoriten hinzufügen</string>

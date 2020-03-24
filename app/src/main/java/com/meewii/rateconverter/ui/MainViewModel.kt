@@ -32,10 +32,15 @@ class MainViewModel @Inject constructor(
   private val userPreferences: UserPreferences
 ) : ViewModel() {
 
+  @VisibleForTesting
+  internal var cachedBaseCurrency: String = "EUR"
+
   private val _viewStatus: MutableLiveData<ViewStatus> = MutableLiveData()
   val viewStatus: LiveData<ViewStatus> = _viewStatus
 
-  private val _baseCurrency: MutableLiveData<Currency> = MutableLiveData()
+  private val _baseCurrency: MutableLiveData<Currency> = MutableLiveData<Currency>().apply {
+    this.value = Currency.toCurrency(cachedBaseCurrency, 1.0)
+  }
   val baseCurrency: LiveData<Currency> = _baseCurrency
   private val _lastUserInput = MediatorLiveData<Double>()
   val lastUserInput: LiveData<Double> = _lastUserInput
@@ -67,9 +72,6 @@ class MainViewModel @Inject constructor(
   private var combinedRatesDisposable = Disposables.disposed()
   private var apiRatesDisposable = Disposables.disposed()
 
-  @VisibleForTesting
-  internal var cachedBaseCurrency: String = "EUR"
-
   /**
    * Get rates for the given base currency
    */
@@ -77,19 +79,13 @@ class MainViewModel @Inject constructor(
     _viewStatus.value = ViewStatus.Loading
     _lastUserInput.value = userPreferences.getLastUserInput()
 
+    val currency = getBaseCurrency(baseCurrency)
     combinedRatesDisposable.dispose()
     combinedRatesDisposable = exchangeRateRepository
-      .getCombinedRates(resetBaseCurrency(baseCurrency))
+      .getCombinedRates(currency)
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe({ handleSuccessfulResponse(it) }, { handleFailedResponse(it) })
-  }
-
-  private fun resetBaseCurrency(baseCurrency: String? = null): String {
-    cachedBaseCurrency = baseCurrency ?: userPreferences.getBaseCurrency()
-    _baseCurrency.value = Currency.toCurrency(cachedBaseCurrency, 1.0)
-    userPreferences.setBaseCurrency(cachedBaseCurrency)
-    return cachedBaseCurrency
   }
 
   /**
@@ -99,22 +95,26 @@ class MainViewModel @Inject constructor(
     _viewStatus.value = ViewStatus.Loading
 
     apiRatesDisposable.dispose()
-    apiRatesDisposable = exchangeRateRepository.getApiCombinedRates(cachedBaseCurrency)
+    apiRatesDisposable = exchangeRateRepository.getCombinedRates(cachedBaseCurrency)
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe({ handleSuccessfulResponse(it) }, { handleFailedResponse(it) })
   }
 
   private fun handleSuccessfulResponse(rateList: RateList) {
-    when (rateList) {
-      is RateList.Success -> {
-        _combinedRates.value = rateList.currencies
-        _viewStatus.value = ViewStatus.Idle
-      }
-      is RateList.Error -> {
-        _viewStatus.value = ViewStatus.Error(rateList.errorMessage, rateList.error)
-      }
-    }
+    _combinedRates.value = rateList.currencies
+    _viewStatus.value = ViewStatus.Idle
+    updateBaseCurrency(rateList.baseCurrency)
+  }
+
+  private fun getBaseCurrency(baseCurrency: String? = null): String {
+    return baseCurrency ?: userPreferences.getBaseCurrency()
+  }
+
+  private fun updateBaseCurrency(currency: String? = null) {
+    cachedBaseCurrency = currency ?: "EUR"
+    _baseCurrency.value = Currency.toCurrency(cachedBaseCurrency, 1.0)
+    userPreferences.setBaseCurrency(cachedBaseCurrency)
   }
 
   private fun handleFailedResponse(error: Throwable) {

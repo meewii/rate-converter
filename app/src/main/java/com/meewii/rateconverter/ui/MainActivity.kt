@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.EmptyResultSetException
 import com.google.android.material.snackbar.Snackbar
 import com.meewii.rateconverter.R
 import com.meewii.rateconverter.business.InvalidResponseException
@@ -106,6 +107,7 @@ class MainActivity : AppCompatActivity() {
         ui_swipe_container.isRefreshing = false
         val errMessage = when (status.throwable) {
           is InvalidResponseException -> getString(R.string.error_invalid_response)
+          is EmptyResultSetException -> getString(R.string.error_currency_unavailable_db)
           is UnknownHostException -> getString(R.string.error_no_network)
           is TimeoutException -> getString(R.string.error_no_network)
           is Exception -> status.throwable.message ?: getString(R.string.error_no_network)
@@ -181,8 +183,4 @@ class MainActivity : AppCompatActivity() {
     mainViewModel.subscribeToRates()
   }
 
-  @TestOnly
-  internal fun setTestViewModel(testViewModel: MainViewModel) {
-    mainViewModel = testViewModel
-  }
 }

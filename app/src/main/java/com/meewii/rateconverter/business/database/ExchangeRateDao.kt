@@ -12,7 +12,7 @@ import com.meewii.rateconverter.business.database.ExchangeRateDao.Companion.EXCH
 import com.meewii.rateconverter.business.database.ExchangeRateDao.Companion.EXCHANGE_RATE_COLUMN_LAST_UPDATE
 import com.meewii.rateconverter.business.database.ExchangeRateDao.Companion.EXCHANGE_RATE_COLUMN_RATES
 import com.meewii.rateconverter.business.database.ExchangeRateDao.Companion.EXCHANGE_RATE_TABLE_NAME
-import io.reactivex.Maybe
+import io.reactivex.Single
 import org.threeten.bp.LocalDateTime
 
 @Dao
@@ -30,7 +30,7 @@ interface ExchangeRateDao {
 
   @Transaction
   @Query("SELECT * FROM $EXCHANGE_RATE_TABLE_NAME WHERE $EXCHANGE_RATE_COLUMN_BASE_CURRENCY_ID = :baseCurrencyId")
-  fun getRatesForBase(baseCurrencyId: String): Maybe<ExchangeRateEntity>
+  fun getRatesForBase(baseCurrencyId: String): Single<ExchangeRateEntity>
 
 }
 

@@ -34,7 +34,7 @@ data class Currency(
     }
 
     /**
-     * Maps the map of rates from to Currency list
+     * Maps the map of rates to Currency list
      */
     fun toCurrencyList(rates: Map<String, Double>): List<Currency> {
       return rates.map {
